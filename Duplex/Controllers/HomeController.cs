@@ -1,4 +1,6 @@
-﻿using Duplex.Models;
+﻿using Duplex.Data;
+using Duplex.Infrastructure.Data.Models;
+using Duplex.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -14,11 +16,6 @@ namespace Duplex.Controllers
         }
 
         public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
         {
             return View();
         }

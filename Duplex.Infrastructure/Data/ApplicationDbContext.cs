@@ -1,10 +1,11 @@
 ﻿using Duplex.Infrastructure.Data.Models;
+using Duplex.Infrastructure.Data.Models.Account;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Duplex.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Category> Categories { get; set; }
         public DbSet<Bet> Bets { get; set; }
