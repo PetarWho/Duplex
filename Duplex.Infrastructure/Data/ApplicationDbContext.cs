@@ -7,11 +7,11 @@ namespace Duplex.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Bet> Bets { get; set; }
-        public DbSet<Event> Events { get; set; }
-        public DbSet<Region> Regions { get; set; }
-        public DbSet<Prize> Prizes { get; set; }
+        public DbSet<Category> Categories { get; set; } = null!;
+        public DbSet<Bet> Bets { get; set; } = null!;
+        public DbSet<Event> Events { get; set; } = null!;
+        public DbSet<Region> Regions { get; set; } = null!;
+        public DbSet<Prize> Prizes { get; set; } = null!;
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

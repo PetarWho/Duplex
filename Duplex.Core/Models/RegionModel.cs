@@ -1,10 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Duplex.Infrastructure.Data.Models
+namespace Duplex.Core.Models
 {
-    public class Region
+    public class RegionModel
     {
-        [Key]
         public int Id { get; set; }
 
         [Required]

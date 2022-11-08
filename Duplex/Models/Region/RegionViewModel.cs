@@ -1,12 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Duplex.Infrastructure.Data.Models
+namespace Duplex.Models.Region
 {
-    public class Region
+    public class RegionViewModel
     {
-        [Key]
-        public int Id { get; set; }
-
         [Required]
         [MinLength(2), MaxLength(40)]
         public string Name { get; set; } = null!;

@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Duplex.Core\Duplex.Core.csproj" />
     <ProjectReference Include="..\Duplex.Infrastructure\Duplex.Infrastructure.csproj" />
   </ItemGroup>
 
