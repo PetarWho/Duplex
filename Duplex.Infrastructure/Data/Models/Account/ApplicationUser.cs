@@ -6,7 +6,7 @@ namespace Duplex.Infrastructure.Data.Models.Account
 {
     public class ApplicationUser:IdentityUser
     {
-        public byte[]? Image { get; set; } = File.ReadAllBytes(@"..\..\DefaultPics\dafault-avatar.png");
+        public byte[]? Image { get; set; } = File.ReadAllBytes(@"..\Duplex.Infrastructure\Data\DefaultPics\dafault-avatar.png");
 
         [Required]
         [ForeignKey(nameof(Region))]

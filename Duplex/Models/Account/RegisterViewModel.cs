@@ -2,6 +2,9 @@
 
 namespace Duplex.Models.Account
 {
+    /// <summary>
+    /// Model for Register View
+    /// </summary>
     public class RegisterViewModel
     {
         [Required]
@@ -22,5 +25,8 @@ namespace Duplex.Models.Account
         [DataType(DataType.Password)]
         [Compare(nameof(Password))]
         public string ConfirmPassword { get; set; } = null!;
+        public int RegionId { get; set; }
+
+        public IEnumerable<Infrastructure.Data.Models.Region> Regions { get; set; } = new List<Infrastructure.Data.Models.Region>();
     }
 }

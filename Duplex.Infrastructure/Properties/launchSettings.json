@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Duplex.Infrastructure": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:56272;http://localhost:56273"
+    }
+  }
+}

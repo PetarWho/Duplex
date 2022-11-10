@@ -70,8 +70,7 @@ namespace Duplex.Core.Common
         /// <returns>Expression tree</returns>
         public IQueryable<T> AllReadonly<T>() where T : class
         {
-            return this.DbSet<T>()
-                .AsNoTracking();
+            return this.DbSet<T>().AsNoTracking();
         }
         public IQueryable<T> AllReadonly<T>(Expression<Func<T, bool>> search) where T : class
         {

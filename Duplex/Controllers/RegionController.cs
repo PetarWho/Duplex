@@ -2,9 +2,11 @@
 using Duplex.Core.Contracts;
 using Duplex.Core.Models;
 using Duplex.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Duplex.Controllers
 {
+    [Authorize]
     public class RegionController : Controller
     {
        private readonly IRegionService regionService;
