@@ -1,0 +1,28 @@
+﻿@using Duplex.Core.Models
+@model IEnumerable<RegionModel>
+
+@{
+    ViewBag.Title = "List of Regions";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+<div class="text-center container d-flex justify-content-center">
+    <ul class="list-group list">
+        @foreach (var reg in Model)
+        {
+            <li class="list-group-item">
+                <h5 class="text-start text-wrap p-2 float-start"><span>@reg.Name</span></h5>
+                <span class="float-end buttons">
+                    <form asp-action="Edit" asp-route-regId="@reg.Id" class="d-inline">
+                        <input type="submit" class="btn btn-outline-warning" value="Edit">
+                    </form>
+                    <form asp-action="Delete" asp-route-regId="@reg.Id" class="d-inline">
+                        <input type="submit" class="btn btn-outline-danger" value="Delete">
+                    </form>
+                </span>
+            </li>
+        }
+    </ul>
+</div>
