@@ -10,6 +10,7 @@ namespace Duplex.Extensions
         {
             services.AddScoped<IRepository, Repository>();
             services.AddScoped<IRegionService, RegionService>();
+            services.AddScoped<IPrizeService, PrizeService>();
 
             return services;
         }

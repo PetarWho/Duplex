@@ -1,0 +1,43 @@
+﻿@using Duplex.Core.Models
+@model IEnumerable<PrizeModel>
+
+@{
+    ViewBag.Title = "List of Prizes";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+<div class="text-center container d-flex justify-content-center">
+    @foreach (var prize in Model)
+    {
+        <div class="card" style="width: 18rem;">
+            <img src="@prize.ImageUrl" class="card-img-top" alt="Prize Image">
+            <div class="card-body">
+                <h5 class="card-title">@prize.Name</h5>
+                <h6 class="card-subtitle">DX @prize.Cost</h6>
+                <p class="card-text">@prize.Description</p>
+                <p class="card-footer">@prize.CreatedOnUTC.ToShortDateString()</p>
+                <span class="float-end buttons">
+                    <form asp-action="Edit" asp-route-pId="@prize.Id" class="d-inline">
+                        <input type="submit" class="btn btn-outline-warning" value="Edit">
+                    </form>
+                    <form asp-action="Delete" asp-route-pId="@prize.Id" class="d-inline">
+                        <input type="submit" class="btn btn-outline-danger" value="Delete">
+                    </form>
+                </span>
+            </div>
+        </div>
+        @*<li class="list-group-item">
+            <h5 class="text-start text-wrap p-2 float-start"><span>@prize.Name</span></h5>
+            <span class="float-end buttons">
+                <form asp-action="Edit" asp-route-regId="@prize.Id" class="d-inline">
+                    <input type="submit" class="btn btn-outline-warning" value="Edit">
+                </form>
+                <form asp-action="Delete" asp-route-regId="@prize.Id" class="d-inline">
+                    <input type="submit" class="btn btn-outline-danger" value="Delete">
+                </form>
+            </span>
+        </li>*@
+    }
+</div>
