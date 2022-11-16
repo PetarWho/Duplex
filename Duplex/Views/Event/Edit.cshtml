@@ -1,7 +1,7 @@
-﻿@using Duplex.Core.Models.Prize
-@model AddPrizeModel
+﻿@using Duplex.Core.Models.Event
+@model EditEventModel
 @{
-    ViewBag.Title = "Add Prize";
+    ViewBag.Title = "Edit Event";
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
@@ -9,19 +9,19 @@
 
 <div class="row">
     <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
-        <form asp-action="Add" method="post">
+        <form asp-action="SubmitEdit" method="post">
             <div class="mb-3">
-                <label asp-for="@Model.Name" class="form-label">Prize Name</label>
+                <label asp-for="@Model.Name" class="form-label">Event Name</label>
                 <input asp-for="@Model.Name" class="form-control" aria-required="true" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label asp-for="@Model.Cost" class="form-label">Cost in Duplex Coins</label>
-                <input asp-for="@Model.Cost" class="form-control" aria-required="true" />
-                <span asp-validation-for="Cost" class="text-danger"></span>
+                <label asp-for="@Model.EntryCost" class="form-label">Cost to enter event (DC)</label>
+                <input asp-for="@Model.EntryCost" class="form-control" aria-required="true" />
+                <span asp-validation-for="EntryCost" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label asp-for="@Model.Description" class="form-label">Prize Description</label>
+                <label asp-for="@Model.Description" class="form-label">Event Description</label>
                 <input asp-for="@Model.Description" class="form-control" aria-required="true" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
@@ -31,7 +31,12 @@
                 <span asp-validation-for="ImageUrl" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <input class="btn btn-primary" type="submit" value="Add" />
+                <label asp-for="@Model.TeamSize" class="form-label">Team Size</label>
+                <input type="number" asp-for="@Model.TeamSize" class="form-control" aria-required="true" min="1" max="5"/>
+                <span asp-validation-for="TeamSize" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <input class="btn btn-primary" type="submit" value="Save Changes" />
             </div>
         </form>
     </div>

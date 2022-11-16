@@ -1,6 +1,5 @@
 ﻿using Duplex.Core.Contracts;
-using Duplex.Core.Models;
-using Duplex.Core.Services;
+using Duplex.Core.Models.Prize;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Duplex.Controllers
@@ -85,7 +84,7 @@ namespace Duplex.Controllers
                 ImageUrl = response.ImageUrl
             };
 
-            TempData["clickedId"] = model.Id;
+            TempData["pid"] = model.Id;
             return View(model);
         }
 
@@ -97,7 +96,7 @@ namespace Duplex.Controllers
                 return View(model);
             }
 
-            var id = TempData?["clickedId"]?.ToString();
+            var id = TempData?["pid"]?.ToString();
 
             if (id == null)
             {

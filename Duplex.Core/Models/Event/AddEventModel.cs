@@ -1,13 +1,9 @@
-﻿using Duplex.Infrastructure.Data.Models.Account;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Duplex.Infrastructure.Data.Models
+namespace Duplex.Core.Models.Event
 {
-    public class Event
+    public class AddEventModel
     {
-        [Key]
-        public Guid Id { get; set; }
-
         [Required]
         [MinLength(3), MaxLength(40)]
         public string Name { get; set; } = null!;
@@ -21,17 +17,12 @@ namespace Duplex.Infrastructure.Data.Models
         public int EntryCost { get; set; }
 
         [Required]
-        [Range(1, 5)]
-        public int TeamSize { get; set; }
-
-        [Required]
-        public DateTime CreatedOnUTC { get; set; }
-
-        [Required]
         [MaxLength(2048)]
         [Url]
         public string ImageUrl { get; set; } = null!;
 
-        public ICollection<ApplicationUser> Participants { get; set; } = new HashSet<ApplicationUser>();
+        [Required]
+        [Range(1, 5)]
+        public int TeamSize { get; set; }
     }
 }

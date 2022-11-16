@@ -1,0 +1,47 @@
+﻿@using Duplex.Core.Models.Event
+@model IEnumerable<EventModel>
+
+@{
+    ViewBag.Title = "List of Events";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+<div class="text-center container d-flex justify-content-center">
+    @foreach (var ev in Model)
+    {
+        <div class="card" style="width: 18rem;">
+            <img src="@ev.ImageUrl" class="card-img-top" alt="Event Image">
+            <div class="card-body">
+                <h5 class="card-title">@ev.Name</h5>
+                <span>
+                    <img class="d-inline" src="/static/pics/coin.png" style="max-width:20px; padding-bottom:1px;">
+                    <strong class="card-subtitle d-inline">@ev.EntryCost</strong>
+                </span>
+                <p class="card-text">@ev.Description</p>
+                <p class="card-text">@ev.TeamSize</p>
+                <p class="card-text btn-outline-dark">@ev.CreatedOnUTC.ToShortDateString()</p>
+                <span class="float-end buttons">
+                    <form asp-action="Edit" asp-route-eId="@ev.Id" class="d-inline">
+                        <input type="submit" class="btn btn-outline-warning" value="Edit">
+                    </form>
+                    <form asp-action="Delete" asp-route-eId="@ev.Id" class="d-inline">
+                        <input type="submit" class="btn btn-outline-danger" value="Delete">
+                    </form>
+                </span>
+            </div>
+        </div>
+        @*<li class="list-group-item">
+    <h5 class="text-start text-wrap p-2 float-start"><span>@prize.Name</span></h5>
+    <span class="float-end buttons">
+    <form asp-action="Edit" asp-route-regId="@prize.Id" class="d-inline">
+    <input type="submit" class="btn btn-outline-warning" value="Edit">
+    </form>
+    <form asp-action="Delete" asp-route-regId="@prize.Id" class="d-inline">
+    <input type="submit" class="btn btn-outline-danger" value="Delete">
+    </form>
+    </span>
+    </li>*@
+    }
+</div>

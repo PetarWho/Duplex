@@ -1,18 +1,16 @@
 ﻿using Duplex.Core.Contracts;
-using Duplex.Core.Models;
-using Microsoft.AspNetCore.Authorization;
+using Duplex.Core.Models.Event;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Duplex.Controllers
 {
-    [Authorize]
-    public class RegionController : Controller
+    public class EventController : Controller
     {
         #region Injection
-        private readonly IRegionService regionService;
-        public RegionController(IRegionService _regionService)
+        private readonly IEventService eventService;
+        public EventController(IEventService _eventService)
         {
-            this.regionService = _regionService;
+            this.eventService = _eventService;
         }
         #endregion
 
@@ -22,7 +20,7 @@ namespace Duplex.Controllers
         public IActionResult Add() => View();
 
         [HttpPost]
-        public async Task<IActionResult> Add(RegionModel model)
+        public async Task<IActionResult> Add(AddEventModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -30,7 +28,7 @@ namespace Duplex.Controllers
             }
             try
             {
-                await regionService.AddRegionAsync(model);
+                await eventService.AddEventAsync(model);
 
                 return RedirectToAction(nameof(All));
             }
@@ -48,7 +46,7 @@ namespace Duplex.Controllers
         [HttpGet]
         public async Task<IActionResult> All()
         {
-            var model = await regionService.GetAllAsync();
+            var model = await eventService.GetAllAsync();
             return View(model);
         }
 
@@ -57,9 +55,9 @@ namespace Duplex.Controllers
         #region Delete
 
         [HttpPost]
-        public async Task<IActionResult> Delete(int regId)
+        public async Task<IActionResult> Delete(Guid eId)
         {
-            await regionService.DeleteRegionAsync(regId);
+            await eventService.DeleteEventAsync(eId);
             return RedirectToAction(nameof(All));
         }
 
@@ -68,41 +66,45 @@ namespace Duplex.Controllers
         #region Edit
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int regId)
+        public async Task<IActionResult> Edit(Guid eId)
         {
-            var response = await regionService.GetRegionAsync(regId);
+            var response = await eventService.GetEventAsync(eId);
 
             if (response == null)
             {
                 throw new ArgumentException("Model is null!");
             }
 
-            var model = new RegionModel()
+            var model = new EditEventModel()
             {
                 Id = response.Id,
                 Name = response.Name,
-                Code = response.Code
+                EntryCost = response.EntryCost,
+                Description = response.Description,
+                ImageUrl = response.ImageUrl
             };
 
-            TempData["rid"] = model.Id;
+            TempData["eid"] = model.Id;
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> SubmitEdit(RegionModel model)
+        public async Task<IActionResult> SubmitEdit(EditEventModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            if(!int.TryParse(TempData?["rid"]?.ToString(), out int id))
+            var id = TempData?["eid"]?.ToString();
+
+            if (id == null)
             {
                 throw new ArgumentException("Non-existing element");
             }
 
-            model.Id = id;
-            await regionService.EditRegionAsync(model);
+            model.Id = Guid.Parse(id);
+            await eventService.EditEventAsync(model);
             return RedirectToAction(nameof(All));
         }
 

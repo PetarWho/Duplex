@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Duplex.Core.Models
+namespace Duplex.Core.Models.Prize
 {
     public class EditPrizeModel
     {
@@ -19,7 +19,8 @@ namespace Duplex.Core.Models
         public string Description { get; set; } = null!;
 
         [Required]
+        [MaxLength(2048)]
+        [Url]
         public string ImageUrl { get; set; } = null!;
-        public DateTime CreatedOnUTC { get; set; }
     }
 }

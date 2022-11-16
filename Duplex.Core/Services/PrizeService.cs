@@ -1,6 +1,6 @@
 ﻿using Duplex.Core.Common;
 using Duplex.Core.Contracts;
-using Duplex.Core.Models;
+using Duplex.Core.Models.Prize;
 using Duplex.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
 

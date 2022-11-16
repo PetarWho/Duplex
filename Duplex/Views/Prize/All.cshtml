@@ -1,4 +1,4 @@
-﻿@using Duplex.Core.Models
+﻿@using Duplex.Core.Models.Prize
 @model IEnumerable<PrizeModel>
 
 @{
@@ -15,9 +15,12 @@
             <img src="@prize.ImageUrl" class="card-img-top" alt="Prize Image">
             <div class="card-body">
                 <h5 class="card-title">@prize.Name</h5>
-                <h6 class="card-subtitle">DX @prize.Cost</h6>
+                <span>
+                <img class="d-inline" src="/static/pics/coin.png" style="max-width:20px; padding-bottom:1px;">
+                <strong class="card-subtitle d-inline dec-none">@prize.Cost</strong>
+                </span>
                 <p class="card-text">@prize.Description</p>
-                <p class="card-footer">@prize.CreatedOnUTC.ToShortDateString()</p>
+                <p class="card-text btn-outline-dark">@prize.CreatedOnUTC.ToShortDateString()</p>
                 <span class="float-end buttons">
                     <form asp-action="Edit" asp-route-pId="@prize.Id" class="d-inline">
                         <input type="submit" class="btn btn-outline-warning" value="Edit">

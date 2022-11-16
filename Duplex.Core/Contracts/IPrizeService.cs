@@ -1,4 +1,4 @@
-﻿using Duplex.Core.Models;
+﻿using Duplex.Core.Models.Prize;
 using Duplex.Infrastructure.Data.Models;
 
 namespace Duplex.Core.Contracts

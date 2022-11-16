@@ -21,6 +21,8 @@ namespace Duplex.Infrastructure.Data.Models
         public string Description { get; set; } = null!;
 
         [Required]
+        [MaxLength(2048)]
+        [Url]
         public string ImageUrl { get; set; } = null!;
 
         [Required]
