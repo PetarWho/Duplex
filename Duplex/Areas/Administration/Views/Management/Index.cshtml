@@ -1,0 +1,19 @@
+﻿<div class="container d-flex">
+    <div class="card" style="width: 18rem; margin:0 1px">
+        <img src="/static/admin/pics/permission.png" class="card-img-top" alt="Permissions Image">
+        <div class="card-body">
+            <h5 class="card-title">Ranks</h5>
+            <p class="card-text">Give/Revoke permissions to any user!</p>
+            <div class="btn-group dropend">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Manage
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" asp-action="Add" asp-controller="Rank">Add Rank</a></li>
+                    <li><a class="dropdown-item" asp-action="All" asp-controller="Rank">List of available ranks</a></li>
+                    <li><a class="dropdown-item" asp-action="Add" asp-controller="Rank">IDK YET</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

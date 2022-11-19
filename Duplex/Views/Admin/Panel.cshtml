@@ -1,5 +1,5 @@
 ﻿<div class="container d-flex">
-    <div class="card" style="width: 18rem; margin:0 1px">
+    <div class="card" style="width: 18rem;">
         <img src="/static/admin/pics/region.png" class="card-img-top" alt="Region Image">
         <div class="card-body">
             <h5 class="card-title">Regions</h5>
@@ -47,6 +47,18 @@
                     <li><a class="dropdown-item" asp-action="All" asp-controller="Event">List of Events</a></li>
                     <li><a class="dropdown-item" asp-action="Add" asp-controller="Event">IDK YET</a></li>
                 </ul>
+            </div>
+        </div>
+    </div>
+    <div class="card" style="width: 18rem;">
+        <img src="/static/admin/pics/settings.png" class="card-img-top" alt="Permissions Image">
+        <div class="card-body">
+            <h5 class="card-title">Advanced</h5>
+            <p class="card-text">Advanced settings for user management and permissions.</p>
+            <div class="btn-group dropend">
+                <a class="btn btn-primary" asp-controller="Management" asp-action="Index" asp-area="Administration">
+                    Settings
+                </a>
             </div>
         </div>
     </div>

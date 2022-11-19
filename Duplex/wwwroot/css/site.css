@@ -27,3 +27,6 @@ body {
     text-decoration:none;
     list-style:none;
 }
+.card {
+    margin: 0 3px;
+}
