@@ -23,25 +23,12 @@
                 <p class="card-text">@ev.TeamSize</p>
                 <p class="card-text btn-outline-dark">@ev.CreatedOnUTC.ToShortDateString()</p>
                 <span class="float-end buttons">
-                    <form asp-action="Edit" asp-route-eId="@ev.Id" class="d-inline">
-                        <input type="submit" class="btn btn-outline-warning" value="Edit">
-                    </form>
-                    <form asp-action="Delete" asp-route-eId="@ev.Id" class="d-inline">
-                        <input type="submit" class="btn btn-outline-danger" value="Delete">
-                    </form>
+                    <a asp-controller="Event" asp-action="Edit" asp-route-id="@ev.Id"
+                   class="btn btn-warning">Edit</a>
+                    <a asp-controller="Event" asp-action="Delete" asp-route-id="@ev.Id"
+                   class="btn btn-danger">Delete</a>
                 </span>
             </div>
         </div>
-        @*<li class="list-group-item">
-    <h5 class="text-start text-wrap p-2 float-start"><span>@prize.Name</span></h5>
-    <span class="float-end buttons">
-    <form asp-action="Edit" asp-route-regId="@prize.Id" class="d-inline">
-    <input type="submit" class="btn btn-outline-warning" value="Edit">
-    </form>
-    <form asp-action="Delete" asp-route-regId="@prize.Id" class="d-inline">
-    <input type="submit" class="btn btn-outline-danger" value="Delete">
-    </form>
-    </span>
-    </li>*@
     }
 </div>

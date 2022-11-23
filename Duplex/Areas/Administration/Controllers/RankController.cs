@@ -1,9 +1,11 @@
-﻿using Duplex.Core.Contracts.Administration;
+﻿using Duplex.Core.Common.Constants;
+using Duplex.Core.Contracts.Administration;
 using Duplex.Core.Models.Administration.Rank;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Duplex.Areas.Administration.Controllers
 {
+    [Area(AreaConstants.RankArea)]
     public class RankController : Controller
     {
         #region Injection
@@ -28,7 +30,7 @@ namespace Duplex.Areas.Administration.Controllers
             }
             try
             {
-                await rankService.AddEventAsync(model);
+                await rankService.AddRankAsync(model);
 
                 return RedirectToAction(nameof(All));
             }

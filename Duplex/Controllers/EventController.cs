@@ -55,9 +55,9 @@ namespace Duplex.Controllers
         #region Delete
 
         [HttpPost]
-        public async Task<IActionResult> Delete(Guid eId)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            await eventService.DeleteEventAsync(eId);
+            await eventService.DeleteEventAsync(id);
             return RedirectToAction(nameof(All));
         }
 
@@ -65,15 +65,18 @@ namespace Duplex.Controllers
 
         #region Edit
 
-        [HttpPost]
-        public async Task<IActionResult> Edit(Guid eId)
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
         {
-            var response = await eventService.GetEventAsync(eId);
 
-            if (response == null)
+            if ((await eventService.Exists(id)) == false)
             {
-                throw new ArgumentException("Model is null!");
+                return RedirectToAction(nameof(All));
             }
+
+            var response = await eventService.GetEventAsync(id);
+
+            TempData["eid"] = id;
 
             var model = new EditEventModel()
             {
@@ -83,27 +86,30 @@ namespace Duplex.Controllers
                 Description = response.Description,
                 ImageUrl = response.ImageUrl
             };
-
-            TempData["eid"] = model.Id;
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> SubmitEdit(EditEventModel model)
+        public async Task<IActionResult> Edit(Guid id, EditEventModel model)
         {
+
+            if (id != model.Id)
+            {
+                return RedirectToPage("/Error/NotFound404", new { area = "Errors" });
+            }
+
+            if (TempData["eid"]?.ToString() != id.ToString())
+            {
+                return RedirectToPage("/Error/NotFound404", new { area = "Errors" });
+
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            var id = TempData?["eid"]?.ToString();
-
-            if (id == null)
-            {
-                throw new ArgumentException("Non-existing element");
-            }
-
-            model.Id = Guid.Parse(id);
+            model.Id = id;
             await eventService.EditEventAsync(model);
             return RedirectToAction(nameof(All));
         }

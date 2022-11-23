@@ -18,17 +18,17 @@ namespace Duplex.Core.Services.Administration
             roleManager = _roleManager;
         }
 
-        public async Task AddEventAsync(AddRankModel model)
+        public async Task AddRankAsync(AddRankModel model)
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteEventAsync(Guid rankId)
+        public Task DeleteRankAsync(Guid rankId)
         {
             throw new NotImplementedException();
         }
 
-        public Task EditEventAsync(EditRankModel model)
+        public Task EditRankAsync(EditRankModel model)
         {
             throw new NotImplementedException();
         }
@@ -38,7 +38,7 @@ namespace Duplex.Core.Services.Administration
             throw new NotImplementedException();
         }
 
-        public Task<Event> GetEventAsync(Guid rankId)
+        public Task<Event> GetRankAsync(Guid rankId)
         {
             throw new NotImplementedException();
         }

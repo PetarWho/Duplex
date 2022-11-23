@@ -50,6 +50,12 @@ namespace Duplex.Core.Services
             await repo.SaveChangesAsync();
         }
 
+        public async Task<bool> Exists(Guid eId)
+        {
+            return await repo.AllReadonly<Event>()
+                .AnyAsync(e => e.Id == eId);
+        }
+
         public async Task<IEnumerable<EventModel>> GetAllAsync()
         {
             return await repo.AllReadonly<Event>().Select(e => new EventModel()

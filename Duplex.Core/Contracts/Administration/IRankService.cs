@@ -5,10 +5,10 @@ namespace Duplex.Core.Contracts.Administration
 {
     public interface IRankService
     {
-        Task AddEventAsync(AddRankModel model);
+        Task AddRankAsync(AddRankModel model);
         Task<IEnumerable<RankModel>> GetAllAsync();
-        Task<Event> GetEventAsync(Guid rankId);
-        Task EditEventAsync(EditRankModel model);
-        Task DeleteEventAsync(Guid rankId);
+        Task<Event> GetRankAsync(Guid rankId);
+        Task EditRankAsync(EditRankModel model);
+        Task DeleteRankAsync(Guid rankId);
     }
 }

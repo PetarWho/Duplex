@@ -11,5 +11,6 @@ namespace Duplex.Core.Contracts
         Task<Event> GetEventAsync(Guid eId);
         Task EditEventAsync(EditEventModel model);
         Task DeleteEventAsync(Guid eId);
+        Task<bool> Exists(Guid eId);
     }
 }
