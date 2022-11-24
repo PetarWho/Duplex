@@ -21,6 +21,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
+    options.AccessDeniedPath = "/Errors/Error/_403";
 });
 
 builder.Services.AddControllersWithViews();
@@ -37,6 +38,8 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+app.UseStatusCodePagesWithRedirects("/Errors/Error/_{0}");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

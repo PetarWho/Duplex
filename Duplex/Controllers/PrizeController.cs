@@ -54,10 +54,10 @@ namespace Duplex.Controllers
 
         #region Delete
 
-        [HttpPost]
-        public async Task<IActionResult> Delete(Guid pId)
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid id)
         {
-            await prizeService.DeletePrizeAsync(pId);
+            await prizeService.DeletePrizeAsync(id);
             return RedirectToAction(nameof(All));
         }
 
@@ -65,10 +65,10 @@ namespace Duplex.Controllers
 
         #region Edit
 
-        [HttpPost]
-        public async Task<IActionResult> Edit(Guid pId)
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
         {
-            var response = await prizeService.GetPrizeAsync(pId);
+            var response = await prizeService.GetPrizeAsync(id);
 
             if (response == null)
             {
@@ -77,7 +77,7 @@ namespace Duplex.Controllers
 
             var model = new EditPrizeModel()
             {
-                Id = response.Id,
+                Id = id,
                 Name = response.Name,
                 Cost = response.Cost,
                 Description = response.Description,
@@ -89,21 +89,24 @@ namespace Duplex.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SubmitEdit(EditPrizeModel model)
+        public async Task<IActionResult> Edit(Guid id, EditPrizeModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            var id = TempData?["pid"]?.ToString();
-
-            if (id == null)
+            if (id != model.Id)
             {
-                throw new ArgumentException("Non-existing element");
+                return RedirectToPage("/Error/_403", new { area = "Errors" });
             }
 
-            model.Id = Guid.Parse(id);
+            if (TempData["pid"]?.ToString() != id.ToString())
+            {
+                return RedirectToPage("/Error/_403", new { area = "Errors" });
+            }
+
+            model.Id = id;
             await prizeService.EditPrizeAsync(model);
             return RedirectToAction(nameof(All));
         }

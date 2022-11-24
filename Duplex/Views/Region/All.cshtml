@@ -15,12 +15,10 @@
             <li class="list-group-item">
                 <h5 class="text-start text-wrap p-2 float-start"><span>@reg.Name</span></h5>
                 <span class="float-end buttons">
-                    <form asp-action="Edit" asp-route-regId="@reg.Id" class="d-inline">
-                        <input type="submit" class="btn btn-outline-warning" value="Edit">
-                    </form>
-                    <form asp-action="Delete" asp-route-regId="@reg.Id" class="d-inline">
-                        <input type="submit" class="btn btn-outline-danger" value="Delete">
-                    </form>
+                    <a asp-controller="Region" asp-action="Edit" asp-route-id="@reg.Id"
+                   class="btn btn-warning">Edit</a>
+                    <a asp-controller="Region" asp-action="Delete" asp-route-id="@reg.Id"
+                   class="btn btn-danger">Delete</a>
                 </span>
             </li>
         }

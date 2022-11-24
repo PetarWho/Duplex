@@ -7,9 +7,15 @@ namespace Duplex.Areas.Errors.Controllers
     public class ErrorController : Controller
     {
         [HttpGet]
-        public IActionResult NotFound404()
+        public IActionResult _404()
         {
-            return View();
+            return View("404");
+        }
+
+        [HttpGet]
+        public IActionResult _403()
+        {
+            return View("403");
         }
     }
 }

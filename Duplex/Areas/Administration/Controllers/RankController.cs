@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Duplex.Areas.Administration.Controllers
 {
-    [Area(AreaConstants.RankArea)]
+    [Area(AreaConstants.AdministrationArea)]
     public class RankController : Controller
     {
         #region Injection

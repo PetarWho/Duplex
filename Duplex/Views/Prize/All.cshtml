@@ -22,12 +22,10 @@
                 <p class="card-text">@prize.Description</p>
                 <p class="card-text btn-outline-dark">@prize.CreatedOnUTC.ToShortDateString()</p>
                 <span class="float-end buttons">
-                    <form asp-action="Edit" asp-route-pId="@prize.Id" class="d-inline">
-                        <input type="submit" class="btn btn-outline-warning" value="Edit">
-                    </form>
-                    <form asp-action="Delete" asp-route-pId="@prize.Id" class="d-inline">
-                        <input type="submit" class="btn btn-outline-danger" value="Delete">
-                    </form>
+                    <a asp-controller="Prize" asp-action="Edit" asp-route-id="@prize.Id"
+                   class="btn btn-warning">Edit</a>
+                    <a asp-controller="Prize" asp-action="Delete" asp-route-id="@prize.Id"
+                   class="btn btn-danger">Delete</a>
                 </span>
             </div>
         </div>

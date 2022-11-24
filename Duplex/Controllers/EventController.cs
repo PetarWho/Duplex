@@ -54,7 +54,7 @@ namespace Duplex.Controllers
 
         #region Delete
 
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
             await eventService.DeleteEventAsync(id);
@@ -92,21 +92,19 @@ namespace Duplex.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Guid id, EditEventModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
 
             if (id != model.Id)
             {
-                return RedirectToPage("/Error/NotFound404", new { area = "Errors" });
+                return RedirectToPage("/Error/_403", new { area = "Errors" });
             }
 
             if (TempData["eid"]?.ToString() != id.ToString())
             {
-                return RedirectToPage("/Error/NotFound404", new { area = "Errors" });
-
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return View(model);
+                return RedirectToPage("/Error/_403", new { area = "Errors" });
             }
 
             model.Id = id;

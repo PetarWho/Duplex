@@ -56,10 +56,10 @@ namespace Duplex.Controllers
 
         #region Delete
 
-        [HttpPost]
-        public async Task<IActionResult> Delete(int regId)
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
         {
-            await regionService.DeleteRegionAsync(regId);
+            await regionService.DeleteRegionAsync(id);
             return RedirectToAction(nameof(All));
         }
 
@@ -67,10 +67,10 @@ namespace Duplex.Controllers
 
         #region Edit
 
-        [HttpPost]
-        public async Task<IActionResult> Edit(int regId)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
         {
-            var response = await regionService.GetRegionAsync(regId);
+            var response = await regionService.GetRegionAsync(id);
 
             if (response == null)
             {
@@ -79,7 +79,7 @@ namespace Duplex.Controllers
 
             var model = new RegionModel()
             {
-                Id = response.Id,
+                Id = id,
                 Name = response.Name,
                 Code = response.Code
             };
@@ -89,16 +89,21 @@ namespace Duplex.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SubmitEdit(RegionModel model)
+        public async Task<IActionResult> Edit(int id, RegionModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            if(!int.TryParse(TempData?["rid"]?.ToString(), out int id))
+            if (id != model.Id)
             {
-                throw new ArgumentException("Non-existing element");
+                return RedirectToPage("/Error/_403", new { area = "Errors" });
+            }
+
+            if (TempData["rid"]?.ToString() != id.ToString())
+            {
+                return RedirectToPage("/Error/_403", new { area = "Errors" });
             }
 
             model.Id = id;
