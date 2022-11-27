@@ -17,5 +17,15 @@ namespace Duplex.Areas.Errors.Controllers
         {
             return View("403");
         }
+        [HttpGet]
+        public IActionResult _402()
+        {
+            return View("402");
+        }
+        [HttpGet]
+        public IActionResult _401()
+        {
+            return View("401");
+        }
     }
 }

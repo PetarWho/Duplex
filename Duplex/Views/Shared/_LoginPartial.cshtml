@@ -13,7 +13,7 @@
              </span>
         </li>
         <li class="nav-item" style="margin-right:20px;">
-            <a class="nav-link border-bottom text-success" asp-area="" asp-page="" title="Profile Settings">@User.Identity?.Name</a>
+            <a class="nav-link border-bottom text-success" asp-controller="Account" asp-action="Profile" asp-route-id="@UserManager.GetUserAsync(User).Result.Id" title="Profile Settings">@User.Identity?.Name</a>
         </li>
         <li class="nav-item">
             <form class="form-inline" asp-controller="Account" asp-action="Logout" asp-route-id="@UserManager.GetUserId(User)">

@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Firebase.Auth" Version="1.0.0" />
+    <PackageReference Include="FirebaseStorage.net" Version="1.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.10" />
@@ -25,6 +27,7 @@
     <Folder Include="Areas\Administration\Data\" />
     <Folder Include="Areas\Errors\Data\" />
     <Folder Include="Areas\Errors\Models\" />
+    <Folder Include="Content\images\" />
     <Folder Include="wwwroot\js\errors\" />
   </ItemGroup>
 

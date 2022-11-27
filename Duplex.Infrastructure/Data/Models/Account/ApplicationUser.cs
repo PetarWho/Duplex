@@ -6,7 +6,7 @@ namespace Duplex.Infrastructure.Data.Models.Account
 {
     public class ApplicationUser:IdentityUser
     {
-        public byte[]? Image { get; set; } = File.ReadAllBytes(@"..\Duplex.Infrastructure\Data\DefaultPics\dafault-avatar.png");
+        public string? Image { get; set; } = @"https://firebasestorage.googleapis.com/v0/b/duplex-aff1b.appspot.com/o/dafault-avatar.png?alt=media&token=ed4ed983-89d1-4811-a9b7-c9235b409526";
 
         [Required]
         [ForeignKey(nameof(Region))]
