@@ -4,8 +4,10 @@ using Duplex.Data;
 using Duplex.Infrastructure.Data.Models;
 using Duplex.Infrastructure.Data.Models.Account;
 using Duplex.Models.Account;
-using Firebase.Auth;
-using Firebase.Storage;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Drive.v3;
+using Google.Apis.Services;
+using Google.Apis.Upload;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -171,7 +173,7 @@ namespace Duplex.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Profile(string id, IFormFile file)
+        public async Task<IActionResult> Profile(string id, ProfileViewModel model, IFormFile file)
         {
             FileStream stream;
 
@@ -183,52 +185,67 @@ namespace Duplex.Controllers
                 using (Stream fileStream = new FileStream(path, FileMode.Create))
                 {
                     await file.CopyToAsync(fileStream);
+                    await fileStream.DisposeAsync();
                 }
 
                 stream = new FileStream(Path.Combine(path), FileMode.Open);
-                file.CopyTo(stream);
+                await file.CopyToAsync(stream);
+                await stream.DisposeAsync();
 
-                await Task.Run(() => Upload(stream, file.FileName));
+                var user = await repo.GetByIdAsync<ApplicationUser>(id);
 
-                stream.Close();
+                user.UserName = model.UserName;
+                user.PhoneNumber = model.PhoneNumber;
+
+
+                var CSPath = webHostEnvironment.ContentRootPath;
+                // Load the Service account credentials and define the scope of its access.
+                var credential = GoogleCredential.FromFile(GoogleDriveConst.PathToServiceAccountKeyFile)
+                                .CreateScoped(DriveService.ScopeConstants.Drive);
+
+                // Create the  Drive service.
+                var service = new DriveService(new BaseClientService.Initializer()
+                {
+                    HttpClientInitializer = credential
+                });
+
+                // Upload file Metadata
+                var fileMetadata = new Google.Apis.Drive.v3.Data.File()
+                {
+                    Name = file.FileName,
+                    Parents = new List<string>() { GoogleDriveConst.DirectoryId }
+                };
+                // Create a new file on Google Drive
+
+                await using (var fsSource = new FileStream(path, FileMode.Open, FileAccess.Read))
+                {
+                    // Create a new file, with metadata and stream.
+                    var request = service.Files.Create(fileMetadata, fsSource, "image/png, image/jpg, image/jpeg");
+                    request.Fields = "*";
+                    var results = await request.UploadAsync(CancellationToken.None);
+
+                    if (results.Status == UploadStatus.Failed)
+                    {
+                        RedirectToAction("Index", "Home");
+                        throw new Exception("Upload Failed.");
+                    }
+
+                    // the file id of the new file we created
+                    var imageId = request.ResponseBody.Id;
+
+                    // edit user's image
+                    var imageUrl = @$"https://lh3.googleusercontent.com/d/{imageId}";
+                    user.Image = imageUrl;
+                    await repo.SaveChangesAsync();
+                }
+
+                //await Task.Run(() => UploadFileOnDrive(file, path, user));
             }
 
             return RedirectToAction("Index", "Home");
         }
 
-
-        private static string ApiKey = FirebaseInfo.APIKey;
-        private static string Bucket = FirebaseInfo.Bucket;
-        private static string AuthEmail = FirebaseInfo.AuthEmail;
-        private static string AuthPassword = FirebaseInfo.AuthPassword;
-        public async void Upload(FileStream stream, string fileName)
-        {
-            var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
-            var a = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
-
-            //Use the cancellation token source to cancel the upload midway
-            var cancellation = new CancellationTokenSource();
-
-            var task = new FirebaseStorage(Bucket, new FirebaseStorageOptions
-            {
-                AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
-                ThrowOnCancel = true  // when you cancel the upload, exception is thrown. Default = false 
-            })
-                .Child("images")
-                .Child(fileName)
-                .PutAsync(stream, cancellation.Token);
-
-            try
-            {
-                // Error during upload will be thrown when task is awaited
-                string link = await task;
-            }
-            catch(Exception ex)
-            {
-                
-            }
-        }
-
+        
         #endregion
     }
 }

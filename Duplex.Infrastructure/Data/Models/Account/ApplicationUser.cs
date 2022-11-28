@@ -6,7 +6,7 @@ namespace Duplex.Infrastructure.Data.Models.Account
 {
     public class ApplicationUser:IdentityUser
     {
-        public string? Image { get; set; } = @"https://firebasestorage.googleapis.com/v0/b/duplex-aff1b.appspot.com/o/dafault-avatar.png?alt=media&token=ed4ed983-89d1-4811-a9b7-c9235b409526";
+        public string? Image { get; set; } = @"https://drive.google.com/thumbnail?id=1dcQndrPP6Ehv0bC1tDOA1DItnJIjH9qD";
 
         [Required]
         [ForeignKey(nameof(Region))]

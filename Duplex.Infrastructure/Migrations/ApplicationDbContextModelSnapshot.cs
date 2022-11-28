@@ -34,7 +34,7 @@ namespace Duplex.Data.Migrations
 
                     b.HasIndex("ParticipantsId");
 
-                    b.ToTable("ApplicationUserEvent");
+                    b.ToTable("ApplicationUserEvent", (string)null);
                 });
 
             modelBuilder.Entity("Duplex.Infrastructure.Data.Models.Account.ApplicationUser", b =>
@@ -148,7 +148,7 @@ namespace Duplex.Data.Migrations
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("Bets");
+                    b.ToTable("Bets", (string)null);
                 });
 
             modelBuilder.Entity("Duplex.Infrastructure.Data.Models.Category", b =>
@@ -166,7 +166,7 @@ namespace Duplex.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Duplex.Infrastructure.Data.Models.Event", b =>
@@ -206,7 +206,7 @@ namespace Duplex.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Events");
+                    b.ToTable("Events", (string)null);
                 });
 
             modelBuilder.Entity("Duplex.Infrastructure.Data.Models.Prize", b =>
@@ -243,7 +243,7 @@ namespace Duplex.Data.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("Prizes");
+                    b.ToTable("Prizes", (string)null);
                 });
 
             modelBuilder.Entity("Duplex.Infrastructure.Data.Models.Region", b =>
@@ -266,7 +266,7 @@ namespace Duplex.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Regions");
+                    b.ToTable("Regions", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
