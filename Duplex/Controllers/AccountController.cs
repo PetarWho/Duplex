@@ -90,7 +90,6 @@ namespace Duplex.Controllers
         #region Login
 
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult Login()
         {
             if (User?.Identity?.IsAuthenticated ?? false)
@@ -104,7 +103,6 @@ namespace Duplex.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
@@ -238,13 +236,10 @@ namespace Duplex.Controllers
                     user.Image = imageUrl;
                     await repo.SaveChangesAsync();
                 }
-
-                //await Task.Run(() => UploadFileOnDrive(file, path, user));
             }
 
             return RedirectToAction("Index", "Home");
         }
-
         
         #endregion
     }

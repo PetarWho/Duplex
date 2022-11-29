@@ -1,32 +1,30 @@
 @import "colors.css";
+@import "buttons.css";
 
-html {
-  font-size: 14px;
+html{
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
-.buttons{
-    margin-left:15px;
+.dec-none {
+    text-decoration: none;
+    list-style: none;
 }
 
-.dec-none{
-    text-decoration:none;
-    list-style:none;
-}
 .card {
     margin: 0 3px;
 }
