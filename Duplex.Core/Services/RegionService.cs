@@ -30,6 +30,7 @@ namespace Duplex.Core.Services
         public async Task DeleteRegionAsync(int regId)
         {
             await repo.DeleteAsync<Region>(regId);
+
             await repo.SaveChangesAsync();
         }
 

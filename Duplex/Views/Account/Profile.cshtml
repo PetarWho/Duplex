@@ -10,8 +10,8 @@
             <div class="col-lg-4">
                 <div class="card mb-4">
                     <div class="card-body text-center">
-                        <img src="@Model.Image" alt="Profile Picture"
-                             class="img-fluid" style="width:15vw; border-radius:10px; margin-bottom:8px;">
+                        <img class ="img-fluid" id="pfp" referrerpolicy="no-referrer" src="@Model.Image" alt="Profile Picture"
+                              style="width:15vw; border-radius:10px; margin-bottom:8px;">
                         <input type="file" class="custom-file-input" name="file" accept=".jpg, .png, .jpeg" />
                         <div class="d-flex justify-content-center mb-2">
                         </div>
@@ -60,7 +60,14 @@
                 </div>
             </div>
             <div class="col-sm-5"></div>
-                <input class=" profile-save-btn" type="submit" value="Save Changes" />
+            <input class=" profile-save-btn" type="submit" value="Save Changes" />
         </div>
     </form>
 </section>
+
+<script>
+    document.querySelector('input[name="file"]').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        document.querySelector('#selectedFile').textContent = file.name;
+    });
+</script>

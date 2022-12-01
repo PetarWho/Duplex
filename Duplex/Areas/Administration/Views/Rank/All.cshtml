@@ -1,0 +1,26 @@
+﻿@using Duplex.Core.Models.Administration.Rank
+@model IEnumerable<RankModel>
+
+@{
+    ViewBag.Title = "List of Ranks";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+<div class="text-center container d-flex justify-content-center">
+    <ul class="list-group list">
+        @foreach (var rank in Model)
+        {
+            <li class="list-group-item">
+                <h5 class="text-start text-wrap p-2 float-start"><span>@rank.Name</span></h5>
+                <span class="float-end buttons">
+                    <a asp-area="Administration" asp-controller="Rank" asp-action="Edit" asp-route-id="@rank.Id"
+                   class="btn btn-warning">Edit</a>
+                    <a asp-area="Administration" asp-controller="Rank" asp-action="Delete" asp-route-id="@rank.Id"
+                   class="btn btn-danger">Delete</a>
+                </span>
+            </li>
+        }
+    </ul>
+</div>

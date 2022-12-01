@@ -1,7 +1,13 @@
 ﻿using Duplex.Core.Common.Constants;
 using Duplex.Core.Contracts.Administration;
+using Duplex.Core.Models;
 using Duplex.Core.Models.Administration.Rank;
+using Duplex.Core.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.V4.Pages.Internal;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Xml.Linq;
 
 namespace Duplex.Areas.Administration.Controllers
 {
@@ -10,9 +16,11 @@ namespace Duplex.Areas.Administration.Controllers
     {
         #region Injection
         private readonly IRankService rankService;
-        public RankController(IRankService _rankService)
+        private readonly RoleManager<IdentityRole> roleManager;
+        public RankController(IRankService _rankService, RoleManager<IdentityRole> _roleManager)
         {
-            this.rankService = _rankService;
+            rankService = _rankService;
+            roleManager = _roleManager;
         }
         #endregion
 
@@ -24,22 +32,17 @@ namespace Duplex.Areas.Administration.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(AddRankModel model)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View(model);
+                IdentityResult result = await rankService.CreateRankAsync(model.Name);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction(nameof(All));
+                }
+                else
+                    ModelState.AddModelError("", "Something went wrong!");
             }
-            try
-            {
-                await rankService.AddRankAsync(model);
-
-                return RedirectToAction(nameof(All));
-            }
-            catch (Exception)
-            {
-                ModelState.AddModelError("", "Oops.. That was not supposed to happen");
-
-                return View(model);
-            }
+            return View(model);
         }
         #endregion
 
@@ -50,6 +53,71 @@ namespace Duplex.Areas.Administration.Controllers
         {
             var model = await rankService.GetAllAsync();
             return View(model);
+        }
+
+        #endregion
+
+        #region Delete
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(string id)
+        {
+            try
+            {
+                await rankService.DeleteRankAsync(id);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+            }
+            return RedirectToAction(nameof(All));
+        }
+
+        #endregion
+
+        #region Edit
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(string id)
+        {
+            var response = await rankService.GetRankAsync(id);
+
+            if (response == null)
+            {
+                throw new ArgumentException("Model is null!");
+            }
+
+            var model = new RankModel()
+            {
+                Id = id,
+                Name = response.Name
+            };
+
+            TempData["rid"] = model.Id;
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(string id, EditRankModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if (id != model.Id)
+            {
+                return RedirectToPage("/Error/_403", new { area = "Errors" });
+            }
+
+            if (TempData["rid"]?.ToString() != id)
+            {
+                return RedirectToPage("/Error/_403", new { area = "Errors" });
+            }
+
+            model.Id = id;
+            await rankService.EditRankAsync(model);
+            return RedirectToAction(nameof(All));
         }
 
         #endregion

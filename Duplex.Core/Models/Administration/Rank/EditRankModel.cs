@@ -4,7 +4,7 @@ namespace Duplex.Core.Models.Administration.Rank
 {
     public class EditRankModel
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; } = null!;
 
         [Required]
         [MinLength(3), MaxLength(20)]

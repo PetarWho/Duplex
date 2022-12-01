@@ -16,6 +16,12 @@
 
 .custom-file-input {
   color: transparent;
+  display:flex;
+  flex-wrap:wrap;
+  margin:auto;
+  max-width:30%;
+  font-size:1em;
+  padding:0;
 }
 .custom-file-input::-webkit-file-upload-button {
   visibility: hidden;
@@ -35,7 +41,6 @@
   text-shadow: 1px 1px #fff;
   font-weight: 700;
   font-size: 10pt;
-  margin-left:6vw;
 }
 .custom-file-input:hover::before {
   border-color: black;
