@@ -1,12 +1,10 @@
 ﻿using Duplex.Core.Common;
 using Duplex.Core.Contracts.Administration;
 using Duplex.Core.Models.Administration.Rank;
-using Duplex.Infrastructure.Data.Models;
 using Duplex.Infrastructure.Data.Models.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
-using System.Xml.Linq;
 
 namespace Duplex.Core.Services.Administration
 {
@@ -17,8 +15,8 @@ namespace Duplex.Core.Services.Administration
 
         public RankService(IRepository _repo, RoleManager<IdentityRole> _roleManager)
         {
-            repo = _repo;
             roleManager = _roleManager;
+            repo = _repo;
         }
 
         public async Task<IdentityResult> CreateRankAsync(string name)
@@ -50,14 +48,14 @@ namespace Duplex.Core.Services.Administration
             await repo.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<RankModel>> GetAllAsync()
+        public async Task<bool> Exists(string rankName)
         {
-            return await roleManager.Roles.Select(r => new RankModel()
-            {
-                Id = r.Id,
-                Name = r.Name,
-                ConcurrencyStamp = r.ConcurrencyStamp
-            }).ToListAsync();
+            return await roleManager.RoleExistsAsync(rankName);
+        }
+
+        public async Task<IEnumerable<IdentityRole>> GetAllAsync()
+        {
+            return await roleManager.Roles.ToListAsync();
         }
 
         public async Task<IdentityRole> GetRankAsync(string rankId)

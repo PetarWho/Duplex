@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Duplex.Core.Common.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Duplex.Controllers
+namespace Duplex.Areas.Administration.Controllers
 {
+    [Area(AreaConstants.AdministrationArea)]
     [Authorize]
     public class AdminController : Controller
     {

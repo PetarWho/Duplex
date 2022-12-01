@@ -1,13 +1,10 @@
-﻿using Duplex.Core.Common.Constants;
+﻿using Duplex.Core.Common;
+using Duplex.Core.Common.Constants;
 using Duplex.Core.Contracts.Administration;
-using Duplex.Core.Models;
 using Duplex.Core.Models.Administration.Rank;
-using Duplex.Core.Services;
+using Duplex.Infrastructure.Data.Models.Account;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.V4.Pages.Internal;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Xml.Linq;
 
 namespace Duplex.Areas.Administration.Controllers
 {
@@ -17,10 +14,14 @@ namespace Duplex.Areas.Administration.Controllers
         #region Injection
         private readonly IRankService rankService;
         private readonly RoleManager<IdentityRole> roleManager;
-        public RankController(IRankService _rankService, RoleManager<IdentityRole> _roleManager)
+        private readonly IRepository repo;
+        private readonly UserManager<ApplicationUser> userManager;
+        public RankController(IRankService _rankService, RoleManager<IdentityRole> _roleManager, IRepository _repo, UserManager<ApplicationUser> _userManager)
         {
             rankService = _rankService;
             roleManager = _roleManager;
+            repo = _repo;
+            userManager = _userManager;
         }
         #endregion
 
@@ -52,7 +53,12 @@ namespace Duplex.Areas.Administration.Controllers
         public async Task<IActionResult> All()
         {
             var model = await rankService.GetAllAsync();
-            return View(model);
+            return View(model.Select(r => new RankModel()
+            {
+                Id = r.Id,
+                Name = r.Name,
+                ConcurrencyStamp = r.ConcurrencyStamp
+            }));
         }
 
         #endregion
@@ -84,7 +90,7 @@ namespace Duplex.Areas.Administration.Controllers
 
             if (response == null)
             {
-                throw new ArgumentException("Model is null!");
+                throw new ArgumentException("No such rank!");
             }
 
             var model = new RankModel()
@@ -93,7 +99,7 @@ namespace Duplex.Areas.Administration.Controllers
                 Name = response.Name
             };
 
-            TempData["rid"] = model.Id;
+            TempData["raid"] = model.Id;
             return View(model);
         }
 
@@ -110,7 +116,7 @@ namespace Duplex.Areas.Administration.Controllers
                 return RedirectToPage("/Error/_403", new { area = "Errors" });
             }
 
-            if (TempData["rid"]?.ToString() != id)
+            if (TempData["raid"]?.ToString() != id)
             {
                 return RedirectToPage("/Error/_403", new { area = "Errors" });
             }
@@ -118,6 +124,42 @@ namespace Duplex.Areas.Administration.Controllers
             model.Id = id;
             await rankService.EditRankAsync(model);
             return RedirectToAction(nameof(All));
+        }
+
+        #endregion
+
+        #region
+
+        [HttpGet]
+        public async Task<IActionResult> Set()
+        {
+            var roles = await rankService.GetAllAsync();
+            var model = new SetRankModel()
+            {
+                Ranks = roles
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Set(SetRankModel model)
+        {
+            if (!ModelState.IsValid || !await rankService.Exists(model.RankId))
+            {
+                model.Ranks = await rankService.GetAllAsync(); ;
+                return View(model);
+            }
+
+            var user = await repo.GetByIdAsync<ApplicationUser>(model.UserId);
+            var rank = await roleManager.FindByIdAsync(model.UserId);
+
+            if (user == null || rank == null)
+            {
+                throw new Exception("Incorrect user or rank!");
+            }
+
+            return View(RedirectToAction(nameof(All)));
         }
 
         #endregion

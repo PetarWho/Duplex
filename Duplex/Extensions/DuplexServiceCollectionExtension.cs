@@ -3,6 +3,8 @@ using Duplex.Core.Services;
 using Duplex.Core.Common;
 using Duplex.Core.Contracts.Administration;
 using Duplex.Core.Services.Administration;
+using Microsoft.AspNetCore.Identity;
+using Duplex.Infrastructure.Data.Models.Account;
 
 namespace Duplex.Extensions
 {
