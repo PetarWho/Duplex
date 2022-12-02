@@ -4,9 +4,35 @@
 }
 
 <section class="background-whitesmoke">
-    <form enctype="multipart/form-data" method="post">
+    <form asp-controller="Account" asp-action="Profile" enctype="multipart/form-data" method="post">
         <input type="hidden" asp-for="@Model.Id" />
-        <div class="row py-3 m-1">
+        <div class="row py-2 m-1">
+            <div class="row text-center" style="margin: 0 3px 1vh;">
+                <div>
+                    <div>
+                        <div class="row">
+                            <div class="col">
+                                <p class="mb-0 color-gray fw-bold fs-2">@Model.UserName</p>
+                                <span>
+                                    <p class="d-inline fs-5">Rank:</p>
+                                @foreach (var rank in Model.Ranks)
+                                {
+                                    switch (rank)
+                                    {
+                                        case "Admin":
+                                                <p class="mb-0 color-darkred d-inline fs-5 fw-bold">@rank</p>
+                                            break;
+                                        default:
+                                                <p class="mb-0 d-inline color-gray">@rank</p>
+                                            break;
+                                    }
+                                }
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-lg-4">
                 <div class="card mb-4">
                     <div class="card-body text-center">

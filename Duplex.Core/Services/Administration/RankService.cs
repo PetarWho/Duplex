@@ -1,10 +1,8 @@
 ﻿using Duplex.Core.Common;
 using Duplex.Core.Contracts.Administration;
 using Duplex.Core.Models.Administration.Rank;
-using Duplex.Infrastructure.Data.Models.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
 
 namespace Duplex.Core.Services.Administration
 {

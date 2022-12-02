@@ -3,17 +3,31 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
+@model LoginPartialViewModel
+
+@{
+    if (User != null)
+    {
+        <script>console.log("Damnnn")</script>
+        var id = @UserManager.GetUserId(User);
+        var user = await UserManager.FindByIdAsync(id);
+        TempData["UserImage"] = user.Image;
+    }
+}
+
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item" style="margin-right:10px;">
             <span class="nav-link">
-             <img src="/static/pics/coin.png" style="max-width:22px;">
-             <a class="text-dark dec-none" title="Duplex Coins">@UserManager.GetUserAsync(User).Result.Coins</a>
-             </span>
+                <img src="/static/pics/coin.png" style="max-width:22px;">
+                <a class="text-dark dec-none" title="Duplex Coins">@UserManager.GetUserAsync(User).Result.Coins</a>
+            </span>
         </li>
         <li class="nav-item" style="margin-right:20px;">
-            <a class="nav-link border-bottom text-success" asp-area="" asp-controller="Account" asp-action="Profile" asp-route-id="@UserManager.GetUserAsync(User).Result.Id" title="Profile Settings">@User.Identity?.Name</a>
+            <a asp-area="" asp-controller="Account" asp-action="Profile" asp-route-id="@UserManager.GetUserAsync(User).Result.Id">
+                <img src="@TempData.Peek("UserImage")" class="nav-link border-bottom text-success" style="max-width:5vw;" title="Profile Settings" />
+            </a>
         </li>
         <li class="nav-item">
             <form class="form-inline" asp-controller="Account" asp-action="Logout" asp-route-id="@UserManager.GetUserId(User)">

@@ -20,6 +20,7 @@ namespace Duplex.Models.Account
         public bool PhoneConfirmed { get; set; }
         public string? Image { get; set; }
         public string? Region { get; set; }
+        public IEnumerable<string> Ranks { get; set; } = new List<string>();
         public int Coins { get; set; } = 0;
         public int Wins { get; set; } = 0;
         public int Loses { get; set; } = 0;

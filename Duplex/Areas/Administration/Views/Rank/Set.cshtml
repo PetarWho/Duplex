@@ -20,7 +20,7 @@
             </div>
 
             <div class="text-center mb-3">
-                <label asp-for="@Model.RankId" class="form-label">Region</label>
+                <label asp-for="@Model.RankId" class="form-label">Rank</label>
                 <select asp-for="@Model.RankId" class="form-control">
                     @foreach (var rank in Model.Ranks)
                     {
@@ -30,7 +30,7 @@
                 <span asp-validation-for="RankId" class="text-danger"></span>
             </div>
             <div class="text-center">
-                <button id="registerSubmit" type="submit" class="btn btn-primary">Register</button>
+                <button id="registerSubmit" type="submit" class="btn btn-primary">Set Rank</button>
             </div>
         </form>
     </div>

@@ -145,21 +145,25 @@ namespace Duplex.Areas.Administration.Controllers
         [HttpPost]
         public async Task<IActionResult> Set(SetRankModel model)
         {
-            if (!ModelState.IsValid || !await rankService.Exists(model.RankId))
+            var rnk = await rankService.Exists(model.RankId);
+
+            if (!ModelState.IsValid )
             {
                 model.Ranks = await rankService.GetAllAsync(); ;
                 return View(model);
             }
 
             var user = await repo.GetByIdAsync<ApplicationUser>(model.UserId);
-            var rank = await roleManager.FindByIdAsync(model.UserId);
+            var rank = await roleManager.FindByIdAsync(model.RankId);
 
             if (user == null || rank == null)
             {
                 throw new Exception("Incorrect user or rank!");
             }
 
-            return View(RedirectToAction(nameof(All)));
+            await userManager.AddToRoleAsync(user, rank.Name);
+
+            return RedirectToAction(nameof(All));
         }
 
         #endregion

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Duplex.Areas.Administration.Controllers
 {
     [Area(AreaConstants.AdministrationArea)]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         public IActionResult Panel()

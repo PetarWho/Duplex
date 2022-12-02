@@ -1,5 +1,6 @@
 ﻿using Duplex.Core.Common;
 using Duplex.Core.Common.Constants;
+using Duplex.Core.Contracts.Administration;
 using Duplex.Data;
 using Duplex.Infrastructure.Data.Models;
 using Duplex.Infrastructure.Data.Models.Account;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Duplex.Controllers
 {
@@ -23,15 +25,18 @@ namespace Duplex.Controllers
         private readonly IRepository repo;
         private readonly ApplicationDbContext context;
         private readonly IWebHostEnvironment webHostEnvironment;
-        public AccountController(SignInManager<ApplicationUser> _signInManager, 
-            UserManager<ApplicationUser> _userManager, IRepository _repo, 
-            ApplicationDbContext _context, IWebHostEnvironment _webHostEnvironment)
+        private readonly IRankService rankService;
+        public AccountController(SignInManager<ApplicationUser> _signInManager,
+            UserManager<ApplicationUser> _userManager, IRepository _repo,
+            ApplicationDbContext _context, IWebHostEnvironment _webHostEnvironment,
+            IRankService _rankService)
         {
             signInManager = _signInManager;
             userManager = _userManager;
             repo = _repo;
             context = _context;
             webHostEnvironment = _webHostEnvironment;
+            rankService = _rankService;
         }
         #endregion
 
@@ -129,7 +134,7 @@ namespace Duplex.Controllers
 
         #region Logout
 
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
@@ -150,7 +155,20 @@ namespace Duplex.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var user = await context.Users.Include(x => x.Region).FirstAsync(x => x.Id == id);
+            var user = await context.Users.Include(x => x.Region).FirstOrDefaultAsync(x => x.Id == id);
+
+            if (user == null)
+            {
+                ModelState.AddModelError("", "No such user!");
+                return RedirectToAction("Index", "Home");
+            }
+
+            var rankIds = await context.UserRoles
+                .Where(ur => ur.UserId == user.Id)
+                .Select(ur => ur.RoleId)
+                .ToListAsync();
+
+            var ranks = rankService.GetAllAsync().Result.Where(r => rankIds.Contains(r.Id)).Select(r => r.Name);
 
             var model = new ProfileViewModel()
             {
@@ -163,6 +181,7 @@ namespace Duplex.Controllers
                 Image = user.Image,
                 Coins = user.Coins,
                 Region = user.Region.ToString(),
+                Ranks = ranks,
                 Wins = user.Wins,
                 Loses = user.Loses
             };
@@ -174,6 +193,8 @@ namespace Duplex.Controllers
         public async Task<IActionResult> Profile(string id, ProfileViewModel model, IFormFile file)
         {
             FileStream stream;
+
+            var user = await repo.GetByIdAsync<ApplicationUser>(id);
 
             if (file != null)
             {
@@ -189,12 +210,6 @@ namespace Duplex.Controllers
                 stream = new FileStream(Path.Combine(path), FileMode.Open);
                 await file.CopyToAsync(stream);
                 await stream.DisposeAsync();
-
-                var user = await repo.GetByIdAsync<ApplicationUser>(id);
-
-                user.UserName = model.UserName;
-                user.PhoneNumber = model.PhoneNumber;
-
 
                 var CSPath = webHostEnvironment.ContentRootPath;
                 // Load the Service account credentials and define the scope of its access.
@@ -234,13 +249,17 @@ namespace Duplex.Controllers
                     // edit user's image
                     var imageUrl = @$"https://lh3.googleusercontent.com/d/{imageId}";
                     user.Image = imageUrl;
-                    await repo.SaveChangesAsync();
                 }
             }
 
+            user.UserName = model.UserName;
+            user.PhoneNumber = model.PhoneNumber;
+
+            await repo.SaveChangesAsync();
+
             return RedirectToAction("Index", "Home");
         }
-        
+
         #endregion
     }
 }
