@@ -15,13 +15,16 @@
 }
 
 .custom-file-input {
-  color: transparent;
-  display:flex;
-  flex-wrap:wrap;
-  margin:auto;
-  max-width:30%;
-  font-size:1em;
-  padding:0;
+    color: transparent;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    flex-wrap: wrap;
+    margin: auto;
+    max-width: 40%;
+    font-size: 1em;
+    padding: 0;
+    align-content: center;
 }
 .custom-file-input::-webkit-file-upload-button {
   visibility: hidden;

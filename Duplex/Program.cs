@@ -13,6 +13,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
+    options.User.RequireUniqueEmail = true;
     //options.SignIn.RequireConfirmedAccount = true;
     options.Password.RequireNonAlphanumeric = false;
 })
@@ -25,18 +26,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     //options.LoginPath = "/Account/Login";
     options.AccessDeniedPath = "/Errors/Error/_403";
 });
-
-//var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy(name: MyAllowSpecificOrigins,
-//                      builder =>
-//                      {
-//                          builder.WithOrigins("https://drive.google.com",
-//                                              "https://lh3.googleusercontent.com");
-//                      });
-//});
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddApplicationServices();

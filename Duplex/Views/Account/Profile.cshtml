@@ -15,18 +15,18 @@
                                 <p class="mb-0 color-gray fw-bold fs-2">@Model.UserName</p>
                                 <span>
                                     <p class="d-inline fs-5">Rank:</p>
-                                @foreach (var rank in Model.Ranks)
-                                {
-                                    switch (rank)
+                                    @foreach (var rank in Model.Ranks)
                                     {
-                                        case "Admin":
+                                        switch (rank)
+                                        {
+                                            case "Admin":
                                                 <p class="mb-0 color-darkred d-inline fs-5 fw-bold">@rank</p>
-                                            break;
-                                        default:
+                                                break;
+                                            default:
                                                 <p class="mb-0 d-inline color-gray">@rank</p>
-                                            break;
+                                                break;
+                                        }
                                     }
-                                }
                                 </span>
                             </div>
                         </div>
@@ -35,21 +35,33 @@
             </div>
             <div class="col-lg-4">
                 <div class="card mb-4">
-                    <div class="card-body text-center">
-                        <img class ="img-fluid" id="pfp" referrerpolicy="no-referrer" src="@Model.Image" alt="Profile Picture"
-                              style="width:15vw; border-radius:10px; margin-bottom:8px;">
+                    <div class="card-body text-center image-box">
+                        <img class="img-fluid" id="pfp" referrerpolicy="no-referrer" src="@Model.Image" alt="Profile Picture"
+                             style="width:15vw; border-radius:10px; margin-bottom:8px;">
                         <input type="file" class="custom-file-input" name="file" accept=".jpg, .png, .jpeg" />
-                        <div class="d-flex justify-content-center mb-2">
+                        <p id="selectedFile"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col" style="display:flex; justify-content:space-around;">
+                                <img class="verified-icons" src=@(Model.EmailConfirmed == true? "/static/pics/profile/mail-verified.png" : "/static/pics/profile/mail-not-verified.png") />
+                                <img class="verified-icons" src=@(Model.PhoneConfirmed == true? "/static/pics/profile/phone-verified.png" : "/static/pics/profile/phone-not-verified.png") />
+                                <img class="verified-icons" src=@(Model.TwoFactorEnabled == true? "/static/pics/profile/2fa-verified.png" : "/static/pics/profile/2fa-not-verified.png") />
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <div class="card mb-2">
+            <div class="col-lg-3">
+                <div class="card mb-1 background-darkgray fw-bold">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-sm-8">
-                                <p class="mb-0">Email Verified: @Model.EmailConfirmed</p>
+                            <div class="col" style="display:flex; justify-content:space-around;">
+                                <p class="m-0">@Model.Region</p>
                             </div>
                         </div>
                     </div>
@@ -64,6 +76,7 @@
                             </div>
                             <div class="col-sm-8">
                                 <input asp-for="@Model.UserName" class="form-control" aria-required="true" value="@Model.UserName" />
+                                <span asp-validation-for="@Model.UserName" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="row m-1">
@@ -71,7 +84,8 @@
                                 <p class="mb-0" style="font-size:1.5vw; font-weight:bold;">Email</p>
                             </div>
                             <div class="col-sm-8">
-                                <input disabled asp-for="@Model.Email" class="form-control" aria-required="true" value="@Model.Email" />
+                                <input asp-for="@Model.Email" class="form-control" aria-required="true" value="@Model.Email" />
+                                <span asp-validation-for="@Model.Email" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="row m-1">
@@ -80,6 +94,7 @@
                             </div>
                             <div class="col-sm-8">
                                 <input asp-for="@Model.PhoneNumber" class="form-control" aria-required="true" value="@Model.PhoneNumber" />
+                                <span asp-validation-for="@Model.PhoneNumber" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
@@ -96,4 +111,5 @@
         const file = e.target.files[0];
         document.querySelector('#selectedFile').textContent = file.name;
     });
+
 </script>

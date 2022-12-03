@@ -28,3 +28,19 @@ body {
 .card {
     margin: 0 3px;
 }
+
+.login-partial-img {
+    max-width: 5vw;
+    max-height:5vh;
+}
+
+.image-box {
+    display: inline-block;
+    text-align: center;
+}
+
+.verified-icons {
+    max-height: 23px;
+    width: auto;
+    margin: 0 5px;
+}

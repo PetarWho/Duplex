@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Security.Claims;
 
 namespace Duplex.Controllers
@@ -78,6 +79,7 @@ namespace Duplex.Controllers
 
             if (result.Succeeded)
             {
+                TempData["UserImage"] = user.Image;
                 await signInManager.PasswordSignInAsync(user, model.Password, false, false);
                 return RedirectToAction("Index", "Home");
             }
@@ -123,6 +125,7 @@ namespace Duplex.Controllers
 
                 if (result.Succeeded)
                 {
+                    TempData["UserImage"] = user.Image;
                     return RedirectToAction("Index", "Home");
                 }
             }
@@ -150,6 +153,7 @@ namespace Duplex.Controllers
         [HttpGet]
         public async Task<IActionResult> Profile(string id)
         {
+
             if (id == null)
             {
                 return RedirectToAction("Index", "Home");
@@ -178,6 +182,7 @@ namespace Duplex.Controllers
                 PhoneNumber = user.PhoneNumber,
                 EmailConfirmed = user.EmailConfirmed,
                 PhoneConfirmed = user.PhoneNumberConfirmed,
+                TwoFactorEnabled = user.TwoFactorEnabled,
                 Image = user.Image,
                 Coins = user.Coins,
                 Region = user.Region.ToString(),
@@ -190,11 +195,34 @@ namespace Duplex.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Profile(string id, ProfileViewModel model, IFormFile file)
+        public async Task<IActionResult> Profile(string id, ProfileViewModel model, IFormFile? file)
         {
-            FileStream stream;
+            var user = await context.Users.Include(x => x.Region).FirstOrDefaultAsync(x => x.Id == id);
 
-            var user = await repo.GetByIdAsync<ApplicationUser>(id);
+            if (user == null)
+            {
+                RedirectToAction("Index", "Home");
+                throw new Exception("Invalid User.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.Id = id;
+                model.UserName = user.UserName;
+                model.Email = user.Email;
+                model.PhoneNumber = model.PhoneNumber?.Trim() == "" ? user.PhoneNumber: model.PhoneNumber?.Trim();
+                model.EmailConfirmed = user.EmailConfirmed;
+                model.PhoneConfirmed = user.PhoneNumberConfirmed;
+                model.TwoFactorEnabled = user.TwoFactorEnabled;
+                model.Image = user.Image;
+                model.Coins = user.Coins;
+                model.Region = user.Region.ToString();
+                model.Wins = user.Wins;
+                model.Loses = user.Loses;
+                return View(model);
+            }
+
+            FileStream stream;
 
             if (file != null)
             {
@@ -249,6 +277,7 @@ namespace Duplex.Controllers
                     // edit user's image
                     var imageUrl = @$"https://lh3.googleusercontent.com/d/{imageId}";
                     user.Image = imageUrl;
+                    TempData["UserImage"] = user.Image;
                 }
             }
 

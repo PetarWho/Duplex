@@ -14,5 +14,10 @@ namespace Duplex.Infrastructure.Data.Models
         [Required]
         [MinLength(2), MaxLength(6)]
         public string Code { get; set; } = null!;
+
+        public override string ToString()
+        {
+            return this.Name;
+        }
     }
 }
