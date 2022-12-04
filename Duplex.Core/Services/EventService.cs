@@ -1,7 +1,9 @@
 ﻿using Duplex.Core.Common;
 using Duplex.Core.Contracts;
 using Duplex.Core.Models.Event;
+using Duplex.Data;
 using Duplex.Infrastructure.Data.Models;
+using Duplex.Infrastructure.Data.Models.Account;
 using Microsoft.EntityFrameworkCore;
 
 namespace Duplex.Core.Services
@@ -9,10 +11,12 @@ namespace Duplex.Core.Services
     public class EventService : IEventService
     {
         private readonly IRepository repo;
+        private readonly ApplicationDbContext context;
 
-        public EventService(IRepository _repo)
+        public EventService(IRepository _repo, ApplicationDbContext _context)
         {
             repo = _repo;
+            context = _context;
         }
 
         public async Task AddEventAsync(AddEventModel model)
@@ -70,9 +74,60 @@ namespace Duplex.Core.Services
             }).ToListAsync();
         }
 
-        public async Task<Event> GetEventAsync(Guid eId)
+        public async Task<EditEventModel> GetEventAsync(Guid eId)
         {
-            return await repo.GetByIdAsync<Event>(eId);
+            var result = await repo.GetByIdAsync<Event>(eId);
+
+            return new EditEventModel()
+            {
+                Id = result.Id,
+                Name = result.Name,
+                EntryCost = result.EntryCost,
+                Description = result.Description,
+                ImageUrl = result.ImageUrl,
+                TeamSize = result.TeamSize
+            };
+        }
+
+        public async Task<DetailsEventModel> GetEventWithParticipantsAsync(Guid eId)
+        {
+#pragma warning disable CS8603 // Possible null reference return.
+            return await context.Events.Include(x => x.Participants).Select(x => new DetailsEventModel()
+            {
+                Id=x.Id,
+                Name=x.Name,
+                TeamSize =x.TeamSize,
+                CreatedOnUTC = x.CreatedOnUTC,
+                Description = x.Description,
+                EntryCost = x.EntryCost,
+                ImageUrl = x.ImageUrl,
+                Participants = x.Participants
+            }).FirstOrDefaultAsync(x => x.Id == eId);
+#pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        public async Task<IEnumerable<EventModel>> GetLastThree()
+        {
+            return await repo.AllReadonly<Event>().Select(x => new EventModel()
+            {
+                Id=x.Id,
+                Name = x.Name,
+                CreatedOnUTC = x.CreatedOnUTC,
+                Description = x.Description,
+                EntryCost = x.EntryCost,
+                TeamSize = x.TeamSize,
+                ImageUrl = x.ImageUrl
+            })
+                .OrderByDescending(x => x.CreatedOnUTC).Take(3).ToListAsync();
+        }
+
+        public async Task JoinEvent(Guid eventId, string userId)
+        {
+            var eventUser = new EventUser() { UserId = userId, EventId = eventId };
+
+            await repo.AddAsync<EventUser>(eventUser);
+
+            await repo.SaveChangesAsync();
         }
     }
 }

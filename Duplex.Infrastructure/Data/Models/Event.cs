@@ -32,6 +32,6 @@ namespace Duplex.Infrastructure.Data.Models
         [Url]
         public string ImageUrl { get; set; } = null!;
 
-        public ICollection<ApplicationUser> Participants { get; set; } = new HashSet<ApplicationUser>();
+        public ICollection<EventUser> Participants { get; set; } = new HashSet<EventUser>();
     }
 }

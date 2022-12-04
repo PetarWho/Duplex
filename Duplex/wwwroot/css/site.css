@@ -44,3 +44,7 @@ body {
     width: auto;
     margin: 0 5px;
 }
+
+.panel-cards{
+    height:100%;
+}

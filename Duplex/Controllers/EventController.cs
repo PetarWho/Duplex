@@ -1,6 +1,10 @@
-﻿using Duplex.Core.Contracts;
+﻿using Duplex.Core.Common;
+using Duplex.Core.Contracts;
 using Duplex.Core.Models.Event;
+using Duplex.Infrastructure.Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Duplex.Controllers
 {
@@ -8,9 +12,11 @@ namespace Duplex.Controllers
     {
         #region Injection
         private readonly IEventService eventService;
-        public EventController(IEventService _eventService)
+        private readonly IRepository repo;
+        public EventController(IEventService _eventService, IRepository _repo)
         {
-            this.eventService = _eventService;
+            eventService = _eventService;
+            repo = _repo;
         }
         #endregion
 
@@ -74,18 +80,11 @@ namespace Duplex.Controllers
                 return RedirectToAction(nameof(All));
             }
 
-            var response = await eventService.GetEventAsync(id);
+            var model = await eventService.GetEventAsync(id);
 
             TempData["eid"] = id;
 
-            var model = new EditEventModel()
-            {
-                Id = response.Id,
-                Name = response.Name,
-                EntryCost = response.EntryCost,
-                Description = response.Description,
-                ImageUrl = response.ImageUrl
-            };
+            
             return View(model);
         }
 
@@ -110,6 +109,47 @@ namespace Duplex.Controllers
             model.Id = id;
             await eventService.EditEventAsync(model);
             return RedirectToAction(nameof(All));
+        }
+
+        #endregion
+
+        #region Details
+
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid id)
+        {
+            var ev = await eventService.GetEventWithParticipantsAsync(id);
+
+            var model = new DetailsEventModel()
+            {
+                Id = ev.Id,
+                Name = ev.Name,
+                Description = ev.Description,
+                TeamSize = ev.TeamSize,
+                EntryCost = ev.EntryCost,
+                ImageUrl = ev.ImageUrl,
+                CreatedOnUTC = ev.CreatedOnUTC,
+                Participants = ev.Participants
+            };
+
+            return View(model);
+        }
+
+        #endregion
+
+        #region Join
+
+        [HttpGet]
+        public async Task<IActionResult> Join(Guid id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var match = await repo.AllReadonly<EventUser>(x => x.UserId == userId && x.EventId == id).ToListAsync();
+
+            if (match.Count==0){
+                await eventService.JoinEvent(id, userId);
+            }
+
+            return RedirectToAction("Profile", "Account");
         }
 
         #endregion

@@ -15,17 +15,24 @@
                                 <p class="mb-0 color-gray fw-bold fs-2">@Model.UserName</p>
                                 <span>
                                     <p class="d-inline fs-5">Rank:</p>
-                                    @foreach (var rank in Model.Ranks)
+                                    @if (Model.Ranks.Any())
                                     {
-                                        switch (rank)
+                                        @foreach (var rank in Model.Ranks)
                                         {
-                                            case "Admin":
-                                                <p class="mb-0 color-darkred d-inline fs-5 fw-bold">@rank</p>
-                                                break;
-                                            default:
-                                                <p class="mb-0 d-inline color-gray">@rank</p>
-                                                break;
+                                            switch (rank)
+                                            {
+                                                case "Admin":
+                                                    <p class="mb-0 color-darkred d-inline fs-5 fw-bold">@rank</p>
+                                                    break;
+                                                default:
+                                                    <p class="mb-0 d-inline fs-5 color-darkgrey">@rank</p>
+                                                    break;
+                                            }
                                         }
+                                    }
+                                    else
+                                    {
+                                        <p class="mb-0 fs-5 d-inline color-gray">Member</p>
                                     }
                                 </span>
                             </div>

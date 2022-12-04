@@ -17,6 +17,6 @@ namespace Duplex.Infrastructure.Data.Models.Account
         public int Loses { get; set; } = 0;
         public ICollection<Bet> Bets { get; set; } = new HashSet<Bet>();
         public ICollection<Prize> Prizes { get; set; } = new HashSet<Prize>();
-        public ICollection<Event> Events { get; set; } = new HashSet<Event>();
+        public ICollection<EventUser> Events { get; set; } = new HashSet<EventUser>();
     }
 }

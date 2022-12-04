@@ -12,9 +12,18 @@ namespace Duplex.Data
         public DbSet<Event> Events { get; set; } = null!;
         public DbSet<Region> Regions { get; set; } = null!;
         public DbSet<Prize> Prizes { get; set; } = null!;
+        public DbSet<EventUser> EventsUsers { get; set; } = null!;
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<EventUser>()
+                .HasKey(k => new { k.UserId, k.EventId });
+
+            base.OnModelCreating(builder);
         }
     }
 }

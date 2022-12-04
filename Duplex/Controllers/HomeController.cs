@@ -1,5 +1,5 @@
-﻿using Duplex.Data;
-using Duplex.Infrastructure.Data.Models;
+﻿using Duplex.Core.Contracts;
+using Duplex.Core.Models.Index;
 using Duplex.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -8,16 +8,23 @@ namespace Duplex.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<HomeController> logger;
+        private readonly IEventService eventService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> _logger, IEventService _eventService)
         {
-            _logger = logger;
+            logger = _logger;
+            eventService = _eventService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var model = new LastThreeEventsModel()
+            {
+                Events = await eventService.GetLastThree()
+            };
+
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
