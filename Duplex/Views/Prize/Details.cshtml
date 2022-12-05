@@ -1,0 +1,36 @@
+﻿@using System.Security.Claims
+@using Duplex.Core.Models.Prize
+@model PrizeModel
+
+@{
+    ViewBag.Title = "Prize Details";
+}
+
+<div class="card mb-3 text-center d-flex justify-content-center align-items-center">
+    <img src="@Model.ImageUrl" class="card-img-bottom mt-1" style="width:60vw;" alt="Prize Image">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Name</h5>
+        <span>
+            <img class="d-inline" src="/static/pics/coin.png" style="max-width:20px; padding-bottom:1px;">
+            <strong class="card-subtitle d-inline">@Model.Cost</strong>
+        </span>
+        <p class="card-text">@Model.Description</p>
+        <p class="card-text"><small class="text-muted">Created on @Model.CreatedOnUTC.ToShortDateString()</small></p>
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <div class="buttons">
+                @if (User.IsInRole("Admin"))
+                {
+                    <span class="buttons mt-1 mb-1">
+                        <a class="btn btn-warning" asp-controller="Prize" asp-action="Edit" asp-route-id="@Model.Id"
+                   class="btn btn-primary">Edit</a>
+                    </span>
+                    <span class="buttons mt-1 mb-1">
+                        <a class="btn btn-danger" asp-controller="Prize" asp-action="Delete" asp-route-id="@Model.Id"
+                   class="btn btn-primary">Delete</a>
+                    </span>
+                }
+            </div>
+        }
+    </div>
+</div>

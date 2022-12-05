@@ -94,9 +94,9 @@ namespace Duplex.Core.Services
 #pragma warning disable CS8603 // Possible null reference return.
             return await context.Events.Include(x => x.Participants).Select(x => new DetailsEventModel()
             {
-                Id=x.Id,
-                Name=x.Name,
-                TeamSize =x.TeamSize,
+                Id = x.Id,
+                Name = x.Name,
+                TeamSize = x.TeamSize,
                 CreatedOnUTC = x.CreatedOnUTC,
                 Description = x.Description,
                 EntryCost = x.EntryCost,
@@ -110,7 +110,7 @@ namespace Duplex.Core.Services
         {
             return await repo.AllReadonly<Event>().Select(x => new EventModel()
             {
-                Id=x.Id,
+                Id = x.Id,
                 Name = x.Name,
                 CreatedOnUTC = x.CreatedOnUTC,
                 Description = x.Description,
@@ -132,13 +132,17 @@ namespace Duplex.Core.Services
 
         public async Task LeaveEvent(Guid eventId, string userId)
         {
-            var user = await repo.AllReadonly<ApplicationUser>().Include(x=>x.Events).FirstAsync();
+            var user = await repo.AllReadonly<ApplicationUser>().Include(x => x.Events).FirstOrDefaultAsync(x => x.Id == userId);
 
-            var eventUser = user.Events.First(x=>x.EventId == eventId);
+            if (user != null)
+            {
+                var eventUser = user.Events.First(x => x.EventId == eventId);
 
-            context.EventsUsers.Remove(eventUser);
+                context.EventsUsers.Remove(eventUser);
 
-            await repo.SaveChangesAsync();
+                await repo.SaveChangesAsync();
+            }
+
         }
     }
 }

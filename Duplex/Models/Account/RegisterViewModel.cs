@@ -9,6 +9,7 @@ namespace Duplex.Models.Account
     {
         [Required]
         [MinLength(5), MaxLength(20)]
+        [RegularExpression(@"^[a-zA-Z0-9]{5,}$",ErrorMessage = "Username has to contain only latin letters and digits!")]
         public string UserName { get; set; } = null!;
 
         [Required]

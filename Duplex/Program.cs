@@ -1,6 +1,8 @@
+using Duplex.Core.Common.Constants;
 using Duplex.Data;
 using Duplex.Extensions;
 using Duplex.Infrastructure.Data.Models.Account;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +18,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     options.User.RequireUniqueEmail = true;
     //options.SignIn.RequireConfirmedAccount = true;
     options.Password.RequireNonAlphanumeric = false;
+    options.User.AllowedUserNameCharacters = ProgramConstants.UserNameAllowedCharacters;
 })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -31,6 +34,13 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddApplicationServices();
 builder.Services.AddSession();
 
+builder.Services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    options.ClientId = GoogleDriveConst.ClientId;
+                    options.ClientSecret = GoogleDriveConst.ClientSecret;
+                    options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+                });
 
 var app = builder.Build();
 

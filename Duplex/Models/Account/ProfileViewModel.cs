@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Duplex.Core.Models;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 
 namespace Duplex.Models.Account
@@ -9,6 +10,7 @@ namespace Duplex.Models.Account
 
         [Required]
         [MinLength(5), MaxLength(20)]
+        [RegularExpression(@"^[a-zA-Z0-9]{5,}$",ErrorMessage = "Username has to contain only latin letters and digits!")]
         public string UserName { get; set; } = null!;
 
         [Required]
@@ -27,5 +29,8 @@ namespace Duplex.Models.Account
         public int Coins { get; set; } = 0;
         public int Wins { get; set; } = 0;
         public int Loses { get; set; } = 0;
+
+        public int RegionId { get; set; }
+        public IEnumerable<RegionModel> Regions { get; set; } = new List<RegionModel>();
     }
 }

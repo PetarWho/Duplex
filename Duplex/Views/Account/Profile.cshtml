@@ -64,12 +64,35 @@
                 </div>
             </div>
             <div class="col-lg-3">
-                <div class="card mb-1 background-darkgray fw-bold">
+                <div class="card mb-1 background-lightgray fw-bold">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col" style="display:flex; justify-content:space-around;">
-                                <p class="m-0">@Model.Region</p>
-                            </div>
+                            @if (Model.Region == "Unknown")
+                            {
+                            <p class="text-center">Region:</p>
+                            <p class="text-danger">Choose carefully. To change again contact support!</p>
+                                <div class="text-center mb-3">
+                                    <select asp-for="@Model.RegionId" class="form-control">
+                                        @foreach (var region in Model.Regions.OrderBy(x => x.Name))
+                                        {
+                                            if (region.Name == "Unknown")
+                                            {
+                                                <option selected="selected" value="@region.Id">-</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@region.Id">@region.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col" style="display:flex; justify-content:space-around;">
+                                    <p class="m-0">@Model.Region</p>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>

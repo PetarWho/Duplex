@@ -29,6 +29,7 @@
                     <div class="card-footer">
                         <small class="text-muted">Created on @ev.CreatedOnUTC.ToShortDateString()</small>
                     </div>
+
                     <span class="float-end buttons">
                         <a asp-controller="Event" asp-action="Details" asp-route-id="@ev.Id" class="btn btn-primary">Details</a>
                         @if (User.IsInRole("Admin"))

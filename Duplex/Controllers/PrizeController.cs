@@ -1,5 +1,7 @@
 ﻿using Duplex.Core.Contracts;
+using Duplex.Core.Models.Event;
 using Duplex.Core.Models.Prize;
+using Duplex.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -115,6 +117,33 @@ namespace Duplex.Controllers
             model.Id = id;
             await prizeService.EditPrizeAsync(model);
             return RedirectToAction(nameof(All));
+        }
+
+        #endregion
+
+        #region Details
+
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var prize = await prizeService.GetPrizeAsync(id);
+
+            var model = new PrizeModel()
+            {
+                Id = prize.Id,
+                Name = prize.Name,
+                Description = prize.Description,
+                Cost = prize.Cost,
+                ImageUrl = prize.ImageUrl,
+                CreatedOnUTC = prize.CreatedOnUTC,
+            };
+
+            return View(model);
         }
 
         #endregion

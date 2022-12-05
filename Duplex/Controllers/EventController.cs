@@ -162,7 +162,7 @@ namespace Duplex.Controllers
                 await eventService.JoinEvent(id, userId);
             }
 
-            return RedirectToAction("Profile", "Account");
+            return RedirectToAction("Joined", "Event", new { userId = userId });
         }
 
         #endregion
@@ -181,7 +181,7 @@ namespace Duplex.Controllers
                 await eventService.LeaveEvent(id, userId);
             }
 
-            return RedirectToAction("Profile", "Account");
+            return RedirectToAction("Joined", "Event", new { userId = userId});
         }
 
         #endregion
@@ -194,15 +194,16 @@ namespace Duplex.Controllers
             var user = await repo.GetByIdAsync<ApplicationUser>(userId);
 
             var model = await repo.AllReadonly<EventUser>()
-                .Include(x => x.Event).Where(x=>x.UserId==userId).Select(x=> new EventModel()
+                .Include(x => x.Event).Where(x=>x.UserId==userId).Select(x=> new JoinedEventModel()
             {
-                    Id = x.Event.Id,
-                    Name=x.Event.Name,
-                    ImageUrl = x.Event.ImageUrl,
+                    EventId = x.Event.Id,
+                    EventName=x.Event.Name,
+                    EventImageUrl = x.Event.ImageUrl,
                     TeamSize=x.Event.TeamSize,
                     Description = x.Event.Description,
                     EntryCost = x.Event.EntryCost,
-                    CreatedOnUTC = x.Event.CreatedOnUTC
+                    CreatedOnUTC = x.Event.CreatedOnUTC,
+                    UserName = user.UserName
             }).ToListAsync();
 
             return View(model);

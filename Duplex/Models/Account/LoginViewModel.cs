@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Authentication;
+using System.ComponentModel.DataAnnotations;
 
 namespace Duplex.Models.Account
 {
@@ -11,5 +12,8 @@ namespace Duplex.Models.Account
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; } = null!;
+
+        public string? ReturnUrl { get; set; }
+        public IList<AuthenticationScheme> ExternalLogins { get; set; } = new List<AuthenticationScheme>();
     }
 }
