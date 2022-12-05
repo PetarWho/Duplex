@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Duplex.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class RegionController : Controller
     {
         #region Injection
@@ -98,12 +98,12 @@ namespace Duplex.Controllers
 
             if (id != model.Id)
             {
-                return RedirectToPage("/Error/_403", new { area = "Errors" });
+                return RedirectToAction("_403", "Error", new { area = "Errors" });
             }
 
             if (TempData["rid"]?.ToString() != id.ToString())
             {
-                return RedirectToPage("/Error/_403", new { area = "Errors" });
+                return RedirectToAction("_403", "Error", new { area = "Errors" });
             }
 
             model.Id = id;

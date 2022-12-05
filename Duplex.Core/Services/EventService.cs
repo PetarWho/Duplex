@@ -129,5 +129,16 @@ namespace Duplex.Core.Services
 
             await repo.SaveChangesAsync();
         }
+
+        public async Task LeaveEvent(Guid eventId, string userId)
+        {
+            var user = await repo.AllReadonly<ApplicationUser>().Include(x=>x.Events).FirstAsync();
+
+            var eventUser = user.Events.First(x=>x.EventId == eventId);
+
+            context.EventsUsers.Remove(eventUser);
+
+            await repo.SaveChangesAsync();
+        }
     }
 }

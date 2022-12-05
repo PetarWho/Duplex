@@ -2,33 +2,43 @@
 @model IEnumerable<EventModel>
 
 @{
-    ViewBag.Title = "List of Events";
+    ViewBag.Title = "All Events";
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
 <hr />
 
-<div class="text-center container d-flex justify-content-center">
-    @foreach (var ev in Model)
-    {
-        <div class="card" style="width: 18rem;">
-            <img src="@ev.ImageUrl" style="height:100%;" class="card-img-top" alt="Event Image">
-            <div class="card-body">
-                <h5 class="card-title">@ev.Name</h5>
-                <span>
-                    <img class="d-inline" src="/static/pics/coin.png" style="max-width:20px; padding-bottom:1px;">
-                    <strong class="card-subtitle d-inline">@ev.EntryCost</strong>
-                </span>
-                <p class="card-text">@ev.Description</p>
-                <p class="card-text">@ev.TeamSize</p>
-                <p class="card-text btn-outline-dark">@ev.CreatedOnUTC.ToShortDateString()</p>
-                <span class="float-end buttons">
-                    <a asp-controller="Event" asp-action="Edit" asp-route-id="@ev.Id"
-                   class="btn btn-warning">Edit</a>
-                    <a asp-controller="Event" asp-action="Delete" asp-route-id="@ev.Id"
-                   class="btn btn-danger">Delete</a>
-                </span>
+<div class="text-center">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var ev in Model)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <img src="@ev.ImageUrl" class="card-img-top height-100" alt="Event Image">
+                    <div class="card-body">
+                        <h5 class="card-title">@ev.Name</h5>
+                        <span>
+                            <img class="d-inline" src="/static/pics/coin.png" style="max-width:20px; padding-bottom:1px;">
+                            <strong class="card-subtitle d-inline">@ev.EntryCost</strong>
+                        </span>
+                        <span>
+                            <img class="d-inline" src="/static/pics/team-size.png" style="max-width:20px; padding-bottom:1px;">
+                            <strong class="card-subtitle d-inline">@ev.TeamSize</strong>
+                        </span>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">Created on @ev.CreatedOnUTC.ToShortDateString()</small>
+                    </div>
+                    <span class="float-end buttons">
+                        <a asp-controller="Event" asp-action="Details" asp-route-id="@ev.Id" class="btn btn-primary">Details</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-controller="Event" asp-action="Edit" asp-route-id="@ev.Id" class="btn btn-warning">Edit</a>
+                            <a asp-controller="Event" asp-action="Delete" asp-route-id="@ev.Id" class="btn btn-danger">Delete</a>
+                        }
+                    </span>
+                </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>

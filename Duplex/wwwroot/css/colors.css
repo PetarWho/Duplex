@@ -16,6 +16,18 @@
 .color-purple {
     color: purple;
 }
+.color-deepskyblue {
+    color: deepskyblue;
+}
+.color-dodgerblue {
+    color: dodgerblue;
+}
+.color-lightskyblue {
+    color: lightskyblue;
+}
+.color-cornflowerblue {
+    color: cornflowerblue;
+}
 .color-cyan {
     color: cyan;
 }
@@ -56,4 +68,72 @@
 }
 .background-whitesmoke {
     background-color: whitesmoke;
+}
+
+
+.hover-red:hover{
+    color:red;
+}
+.hover-darkred:hover {
+    color: darkred;
+}
+
+.hover-blue:hover {
+    color: blue;
+}
+
+.hover-green:hover {
+    color: green;
+}
+
+.hover-yellow:hover {
+    color: yellow;
+}
+
+.hover-purple:hover {
+    color: purple;
+}
+
+.hover-cyan:hover {
+    color: cyan;
+}
+
+.color-black {
+    color: black;
+}
+
+.hover-white:hover {
+    color: white;
+}
+
+.hover-orange:hover {
+    color: orange;
+}
+
+.hover-darkorange:hover{
+    color:darkorange;
+}
+
+.hover-lime:hover {
+    color: lime;
+}
+
+.hover-pink:hover {
+    color: pink;
+}
+
+.hover-gray:hover {
+    color: gray;
+}
+
+.hover-peachpuff:hover {
+    color: peachpuff;
+}
+
+.hover-darkgray:hover {
+    color: darkgray;
+}
+
+.hover-lightgray:hover {
+    color: lightgray;
 }

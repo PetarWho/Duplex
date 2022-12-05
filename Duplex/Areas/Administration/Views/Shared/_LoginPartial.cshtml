@@ -3,8 +3,6 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-@model LoginPartialViewModel
-
 @{
     if (User != null)
     {
@@ -21,7 +19,7 @@
         <li class="nav-item" style="margin-right:10px;">
             <span class="nav-link">
                 <img referrerpolicy="no-referrer" src="/static/pics/coin.png" style="max-width:22px;">
-                <a class="text-dark dec-none" title="Duplex Coins">@UserManager.GetUserAsync(User).Result.Coins</a>
+                <a class="text-dark dec-none fw-bold" title="Duplex Coins">@UserManager.GetUserAsync(User).Result.Coins</a>
             </span>
         </li>
         <li class="nav-item" style="margin-right:20px;">
@@ -30,12 +28,13 @@
                     <img referrerpolicy="no-referrer" src="@TempData.Peek("UserImage")" class="border-bottom text-success rounded login-partial-img" title="@User?.Identity?.Name" />
                 </button>
 
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <ul class="dropdown-menu" style="padding:1px 0; margin-top:2px; right:0!important; left:auto; text-align:center;" aria-labelledby="dropdownMenuButton1">
                     <li>
                         <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Profile" asp-route-id="@UserManager.GetUserAsync(User).Result.Id">Profile</a>
                     </li>
+                    <li><hr class="m-0" /></li>
                     <li>
-                        <a class="nav-link" asp-controller="Account" asp-action="Logout" asp-route-id="@UserManager.GetUserId(User)">Logout</a>
+                        <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Logout" asp-route-id="@UserManager.GetUserId(User)">Logout</a>
                     </li>
                 </ul>
             </div>

@@ -2,43 +2,40 @@
 @model IEnumerable<PrizeModel>
 
 @{
-    ViewBag.Title = "List of Prizes";
+    ViewBag.Title = "All Prizes";
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
 <hr />
 
-<div class="text-center container d-flex justify-content-center">
-    @foreach (var prize in Model)
-    {
-        <div class="card" style="width: 18rem;">
-            <img src="@prize.ImageUrl" style="height:100%;" class="card-img-top" alt="Prize Image">
-            <div class="card-body">
-                <h5 class="card-title">@prize.Name</h5>
-                <span>
-                <img class="d-inline" src="/static/pics/coin.png" style="max-width:20px; padding-bottom:1px;">
-                <strong class="card-subtitle d-inline dec-none">@prize.Cost</strong>
-                </span>
-                <p class="card-text">@prize.Description</p>
-                <p class="card-text btn-outline-dark">@prize.CreatedOnUTC.ToShortDateString()</p>
-                <span class="float-end buttons">
-                    <a asp-controller="Prize" asp-action="Edit" asp-route-id="@prize.Id"
-                   class="btn btn-warning">Edit</a>
-                    <a asp-controller="Prize" asp-action="Delete" asp-route-id="@prize.Id"
-                   class="btn btn-danger">Delete</a>
-                </span>
+
+<div class="text-center">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var prize in Model)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <img src="@prize.ImageUrl" class="card-img-top height-100" alt="Event Image">
+                    <div class="card-body">
+                        <h5 class="card-title">@prize.Name</h5>
+                        <span>
+                            <img class="d-inline" src="/static/pics/coin.png" style="max-width:20px; padding-bottom:1px;">
+                            <strong class="card-subtitle d-inline dec-none">@prize.Cost</strong>
+                        </span>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">Added on @prize.CreatedOnUTC.ToShortDateString()</small>
+                    </div>
+                    <span class="float-end buttons">
+                        <a asp-controller="Prize" asp-action="Details" asp-route-id="@prize.Id" class="btn btn-primary">Details</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-controller="Prize" asp-action="Edit" asp-route-id="@prize.Id" class="btn btn-warning">Edit</a>
+                            <a asp-controller="Prize" asp-action="Delete" asp-route-id="@prize.Id" class="btn btn-danger">Delete</a>
+                        }
+                    </span>
+                </div>
             </div>
-        </div>
-        @*<li class="list-group-item">
-            <h5 class="text-start text-wrap p-2 float-start"><span>@prize.Name</span></h5>
-            <span class="float-end buttons">
-                <form asp-action="Edit" asp-route-regId="@prize.Id" class="d-inline">
-                    <input type="submit" class="btn btn-outline-warning" value="Edit">
-                </form>
-                <form asp-action="Delete" asp-route-regId="@prize.Id" class="d-inline">
-                    <input type="submit" class="btn btn-outline-danger" value="Delete">
-                </form>
-            </span>
-        </li>*@
-    }
+        }
+    </div>
 </div>

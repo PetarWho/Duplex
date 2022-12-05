@@ -21,21 +21,28 @@
         <p class="card-text">@Model.Description</p>
         <p class="card-text"><small class="text-muted">Created on @Model.CreatedOnUTC.ToShortDateString()</small></p>
         <div class="buttons">
-            @if(!Model.Participants.Any(x=> x.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) && x.EventId == Model.Id))
+            @if (!Model.Participants.Any(x => x.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) && x.EventId == Model.Id))
             {
-            <span class="buttons mt-1 mb-1">
-                <a asp-controller="Event" asp-action="Join" asp-route-id="@Model.Id"
+                <span class="buttons mt-1 mb-1">
+                    <a asp-controller="Event" asp-action="Join" asp-route-id="@Model.Id"
                    class="btn btn-primary">Join</a>
-            </span>
+                </span>
+            }
+            else
+            {
+                <span class="buttons mt-1 mb-1">
+                    <a asp-controller="Event" asp-action="Leave" asp-route-id="@Model.Id"
+                   class="btn btn-primary">Leave</a>
+                </span>
             }
             @if (User.IsInRole("Admin"))
             {
                 <span class="buttons mt-1 mb-1">
-                    <a asp-controller="Event" asp-action="Edit" asp-route-id="@Model.Id"
+                    <a class="btn btn-warning" asp-controller="Event" asp-action="Edit" asp-route-id="@Model.Id"
                    class="btn btn-primary">Edit</a>
                 </span>
                 <span class="buttons mt-1 mb-1">
-                    <a asp-controller="Event" asp-action="Delete" asp-route-id="@Model.Id"
+                    <a class="btn btn-danger" asp-controller="Event" asp-action="Delete" asp-route-id="@Model.Id"
                    class="btn btn-primary">Delete</a>
                 </span>
             }

@@ -1,5 +1,6 @@
 ﻿using Duplex.Core.Contracts;
 using Duplex.Core.Models.Prize;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Duplex.Controllers
@@ -16,9 +17,11 @@ namespace Duplex.Controllers
 
         #region Add
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Add() => View();
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Add(AddPrizeModel model)
         {
@@ -47,13 +50,14 @@ namespace Duplex.Controllers
         public async Task<IActionResult> All()
         {
             var model = await prizeService.GetAllAsync();
-            return View(model);
+            return View(model.OrderByDescending(x => x.CreatedOnUTC));
         }
 
         #endregion
 
         #region Delete
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -65,6 +69,7 @@ namespace Duplex.Controllers
 
         #region Edit
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
@@ -88,6 +93,7 @@ namespace Duplex.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Edit(Guid id, EditPrizeModel model)
         {

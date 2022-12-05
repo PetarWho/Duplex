@@ -2,6 +2,8 @@
 using Duplex.Core.Contracts;
 using Duplex.Core.Models.Event;
 using Duplex.Infrastructure.Data.Models;
+using Duplex.Infrastructure.Data.Models.Account;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -22,9 +24,11 @@ namespace Duplex.Controllers
 
         #region Add
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Add() => View();
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Add(AddEventModel model)
         {
@@ -53,13 +57,14 @@ namespace Duplex.Controllers
         public async Task<IActionResult> All()
         {
             var model = await eventService.GetAllAsync();
-            return View(model);
+            return View(model.OrderByDescending(x=>x.CreatedOnUTC));
         }
 
         #endregion
 
         #region Delete
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -71,6 +76,7 @@ namespace Duplex.Controllers
 
         #region Edit
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
@@ -88,6 +94,7 @@ namespace Duplex.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Edit(Guid id, EditEventModel model)
         {
@@ -118,6 +125,11 @@ namespace Duplex.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
+            if(id == Guid.Empty)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var ev = await eventService.GetEventWithParticipantsAsync(id);
 
             var model = new DetailsEventModel()
@@ -139,6 +151,7 @@ namespace Duplex.Controllers
 
         #region Join
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Join(Guid id)
         {
@@ -150,6 +163,49 @@ namespace Duplex.Controllers
             }
 
             return RedirectToAction("Profile", "Account");
+        }
+
+        #endregion
+
+        #region Leave
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Leave(Guid id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var match = await repo.AllReadonly<EventUser>(x => x.UserId == userId && x.EventId == id).ToListAsync();
+
+            if (match.Count != 0)
+            {
+                await eventService.LeaveEvent(id, userId);
+            }
+
+            return RedirectToAction("Profile", "Account");
+        }
+
+        #endregion
+
+        #region Joined
+
+        [HttpGet]
+        public async Task<IActionResult> Joined(string userId)
+        {
+            var user = await repo.GetByIdAsync<ApplicationUser>(userId);
+
+            var model = await repo.AllReadonly<EventUser>()
+                .Include(x => x.Event).Where(x=>x.UserId==userId).Select(x=> new EventModel()
+            {
+                    Id = x.Event.Id,
+                    Name=x.Event.Name,
+                    ImageUrl = x.Event.ImageUrl,
+                    TeamSize=x.Event.TeamSize,
+                    Description = x.Event.Description,
+                    EntryCost = x.Event.EntryCost,
+                    CreatedOnUTC = x.Event.CreatedOnUTC
+            }).ToListAsync();
+
+            return View(model);
         }
 
         #endregion

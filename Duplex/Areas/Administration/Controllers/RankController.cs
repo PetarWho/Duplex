@@ -3,12 +3,14 @@ using Duplex.Core.Common.Constants;
 using Duplex.Core.Contracts.Administration;
 using Duplex.Core.Models.Administration.Rank;
 using Duplex.Infrastructure.Data.Models.Account;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Duplex.Areas.Administration.Controllers
 {
     [Area(AreaConstants.AdministrationArea)]
+    [Authorize(Roles = "Admin")]
     public class RankController : Controller
     {
         #region Injection
@@ -58,7 +60,7 @@ namespace Duplex.Areas.Administration.Controllers
                 Id = r.Id,
                 Name = r.Name,
                 ConcurrencyStamp = r.ConcurrencyStamp
-            }));
+            }).ToList());
         }
 
         #endregion

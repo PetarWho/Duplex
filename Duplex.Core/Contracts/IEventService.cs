@@ -1,6 +1,4 @@
 ﻿using Duplex.Core.Models.Event;
-using Duplex.Core.Models.Prize;
-using Duplex.Infrastructure.Data.Models;
 
 namespace Duplex.Core.Contracts
 {
@@ -15,5 +13,6 @@ namespace Duplex.Core.Contracts
         Task<bool> Exists(Guid eId);
         Task<IEnumerable<EventModel>> GetLastThree();
         Task JoinEvent(Guid eventId, string userId);
+        Task LeaveEvent(Guid eventId, string userId);
     }
 }

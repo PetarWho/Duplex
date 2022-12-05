@@ -13,8 +13,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Security.Claims;
 
 namespace Duplex.Controllers
 {
@@ -199,10 +197,11 @@ namespace Duplex.Controllers
         {
             var user = await context.Users.Include(x => x.Region).FirstOrDefaultAsync(x => x.Id == id);
 
-            if (user == null)
+            var senderId = userManager.GetUserId(User);
+
+            if (user == null || senderId != user.Id)
             {
-                RedirectToAction("Index", "Home");
-                throw new Exception("Invalid User.");
+                return RedirectToAction("_403", "Error", new { area = "Errors" });
             }
 
             if (!ModelState.IsValid)
@@ -210,7 +209,7 @@ namespace Duplex.Controllers
                 model.Id = id;
                 model.UserName = user.UserName;
                 model.Email = user.Email;
-                model.PhoneNumber = model.PhoneNumber?.Trim() == "" ? user.PhoneNumber: model.PhoneNumber?.Trim();
+                model.PhoneNumber = model.PhoneNumber?.Trim() == "" ? user.PhoneNumber : model.PhoneNumber?.Trim();
                 model.EmailConfirmed = user.EmailConfirmed;
                 model.PhoneConfirmed = user.PhoneNumberConfirmed;
                 model.TwoFactorEnabled = user.TwoFactorEnabled;
@@ -282,7 +281,10 @@ namespace Duplex.Controllers
             }
 
             user.UserName = model.UserName;
+            user.NormalizedUserName = model.UserName.ToUpperInvariant();
             user.PhoneNumber = model.PhoneNumber;
+            user.Email = model.Email;
+            user.NormalizedEmail = model.Email.ToUpperInvariant();
 
             await repo.SaveChangesAsync();
 

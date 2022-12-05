@@ -48,3 +48,16 @@ body {
 .panel-cards{
     height:100%;
 }
+
+.dropdown-option{
+    display:block;
+    justify-content:center;
+}
+
+.login-dropdown{
+    text-align:center;
+}
+
+.height-100 {
+    height: 100%;
+}

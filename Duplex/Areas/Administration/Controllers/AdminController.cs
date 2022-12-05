@@ -8,9 +8,6 @@ namespace Duplex.Areas.Administration.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
-        public IActionResult Panel()
-        {
-            return View();
-        }
+        public IActionResult Panel() => View();
     }
 }
