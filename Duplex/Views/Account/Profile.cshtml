@@ -55,7 +55,9 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col" style="display:flex; justify-content:space-around;">
-                                <img class="verified-icons" src=@(Model.EmailConfirmed == true? "/static/pics/profile/mail-verified.png" : "/static/pics/profile/mail-not-verified.png") />
+                                <a asp-action="ConfirmEmail" asp-controller="Account">
+                                    <img class="verified-icons" src=@(Model.EmailConfirmed == true? "/static/pics/profile/mail-verified.png" : "/static/pics/profile/mail-not-verified.png") />
+                                </a>
                                 <img class="verified-icons" src=@(Model.PhoneConfirmed == true? "/static/pics/profile/phone-verified.png" : "/static/pics/profile/phone-not-verified.png") />
                                 <img class="verified-icons" src=@(Model.TwoFactorEnabled == true? "/static/pics/profile/2fa-verified.png" : "/static/pics/profile/2fa-not-verified.png") />
                             </div>
@@ -69,8 +71,8 @@
                         <div class="row">
                             @if (Model.Region == "Unknown")
                             {
-                            <p class="text-center">Region:</p>
-                            <p class="text-danger">Choose carefully. To change again contact support!</p>
+                                <p class="text-center">Region:</p>
+                                <p class="text-danger">Choose carefully. To change again contact support!</p>
                                 <div class="text-center mb-3">
                                     <select asp-for="@Model.RegionId" class="form-control">
                                         @foreach (var region in Model.Regions.OrderBy(x => x.Name))

@@ -17,6 +17,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.Net.Mail;
+using System.Net;
 
 namespace Duplex.Controllers
 {
@@ -57,7 +59,7 @@ namespace Duplex.Controllers
 
             var model = new RegisterViewModel()
             {
-                Regions = repo.AllReadonly<Region>().Where(x=>x.Name != "Unknown").OrderBy(x => x.Name).ToList()
+                Regions = repo.AllReadonly<Region>().Where(x => x.Name != "Unknown").OrderBy(x => x.Name).ToList()
             };
 
             return View(model);
@@ -80,7 +82,6 @@ namespace Duplex.Controllers
             };
 
             var result = await userManager.CreateAsync(user, model.Password);
-
 
             if (result.Succeeded)
             {
@@ -310,11 +311,11 @@ namespace Duplex.Controllers
                 Wins = user.Wins,
                 Loses = user.Loses
             };
-            if(user.Region.ToString() == "Unknown")
+            if (user.Region.ToString() == "Unknown")
             {
-                model.Regions = regionService.GetAllAsync().Result.Select(x=> new RegionModel()
+                model.Regions = regionService.GetAllAsync().Result.Select(x => new RegionModel()
                 {
-                    Id=x.Id,
+                    Id = x.Id,
                     Name = x.Name,
                     Code = x.Code,
                 });
@@ -371,7 +372,7 @@ namespace Duplex.Controllers
 
                 var CSPath = webHostEnvironment.ContentRootPath;
                 // Load the Service account credentials and define the scope of its access.
-                var credential = GoogleCredential.FromFile(GoogleDriveConst.PathToServiceAccountKeyFile)
+                var credential = GoogleCredential.FromFile(GoogleConst.PathToServiceAccountKeyFile)
                                 .CreateScoped(DriveService.ScopeConstants.Drive);
 
                 // Create the  Drive service.
@@ -384,7 +385,7 @@ namespace Duplex.Controllers
                 var fileMetadata = new Google.Apis.Drive.v3.Data.File()
                 {
                     Name = file.FileName,
-                    Parents = new List<string>() { GoogleDriveConst.DirectoryId }
+                    Parents = new List<string>() { GoogleConst.DirectoryId }
                 };
                 // Create a new file on Google Drive
 
@@ -421,6 +422,106 @@ namespace Duplex.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        #endregion
+
+        #region Confirm Email
+
+        [HttpGet]
+        public IActionResult ConfirmEmail(string? userId)
+        {
+            //ApplicationUser user;
+            //if (userId == null)
+            //{
+            //    //userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+            //    user = await userManager.GetUserAsync(User);
+            //}
+            //else
+            //{
+            //    user = await userManager.FindByIdAsync(userId);
+            //}
+
+            //string code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, "https");
+
+            //using (var client = new SmtpClient())
+            //{
+            //    client.Connect(GoogleConst.ClientHost);
+            //    client.Authenticate(GoogleConst.FromEmail, GoogleConst.CredentialPassword);
+
+            //    var bodyBuilder = new BodyBuilder()
+            //    {
+            //        HtmlBody = $"<p>Click here <a src =\"{callbackUrl}\"</a> to confirm your email.</p>",
+            //        TextBody = "{callbackUrl}"
+            //    };
+
+            //    var message = new MimeMessage()
+            //    {
+            //        Body = bodyBuilder.ToMessageBody()
+            //    };
+
+            //    message.From.Add(new MailboxAddress("Noreply Duplex", GoogleConst.FromEmail));
+            //    message.To.Add(new MailboxAddress("Confirmation", user.Email));
+            //    message.Subject = "Confirm your email - Duplex.gg";
+            //    client.Send(message);
+            //    client.Disconnect(true);
+            //}
+
+            //return RedirectToAction("Index", "Home");
+
+            //    ApplicationUser user;
+            //    if (userId == null)
+            //    {
+            //        //userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+            //        user = await userManager.GetUserAsync(User);
+            //    }
+            //    else
+            //    {
+            //        user = await userManager.FindByIdAsync(userId);
+            //    }
+
+            //    string code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            //    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, "https");
+            //    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");  
+            //    string body = string.Empty;
+
+            //    string webRootPath = webHostEnvironment.ContentRootPath;
+            //    string path = Path.Combine(webRootPath + @"Content\EmailConfirmation.html");
+
+            //    using (StreamReader reader = new StreamReader(path))
+            //    {
+            //        body = reader.ReadToEnd();
+            //    }
+            //    body = body.Replace("{ConfirmationLink}", callbackUrl);
+            //    body = body.Replace("{UserName}", user.Email);
+            //    MailMessage message = new MailMessage()
+            //    {
+            //        Body = body,
+            //        From = new MailAddress(GoogleConst.FromEmail),
+            //        Subject = "Confirm your email"
+            //    };
+            //    //bool IsSendEmail = SendEmail.EmailSend(user.Email, "Confirm your account", body, true);
+
+            //    var thread = new Thread(() => SendMailThread(message, user.Email, body));
+            //    thread.Start();
+
+
+            return RedirectToAction("Index", "Home");
+
+            //    //return RedirectToAction("Erorr", "_502", new { area = "Errors" });
+            //}
+
+
+            //private static void SendMailThread(MailMessage message, string recipient, string body)
+            //{
+            //    using (var server = new SmtpClient(GoogleConst.ClientHost))
+            //    {
+            //        server.Port = int.Parse(GoogleConst.Port);
+            //        server.EnableSsl = true;
+            //        server.Credentials = new NetworkCredential(GoogleConst.FromEmail, GoogleConst.CredentialPassword);
+            //        server.Send(GoogleConst.FromEmail, recipient, "Confirm your email", body);
+            //    }
+            //}
+        }
         #endregion
     }
 }

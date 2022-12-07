@@ -37,8 +37,8 @@ builder.Services.AddSession();
 builder.Services.AddAuthentication()
                 .AddGoogle(options =>
                 {
-                    options.ClientId = GoogleDriveConst.ClientId;
-                    options.ClientSecret = GoogleDriveConst.ClientSecret;
+                    options.ClientId = GoogleConst.ClientId;
+                    options.ClientSecret = GoogleConst.ClientSecret;
                     options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
                 });
 
