@@ -11,12 +11,14 @@ namespace Duplex.Core.Services
     public class EventService : IEventService
     {
         private readonly IRepository repo;
+        private readonly IBetService betService;
         private readonly ApplicationDbContext context;
 
-        public EventService(IRepository _repo, ApplicationDbContext _context)
+        public EventService(IRepository _repo, ApplicationDbContext _context, IBetService _betService)
         {
             repo = _repo;
             context = _context;
+            betService = _betService;
         }
 
         public async Task AddEventAsync(AddEventModel model)
@@ -124,10 +126,17 @@ namespace Duplex.Core.Services
         public async Task JoinEvent(Guid eventId, string userId)
         {
             var user = await repo.GetByIdAsync<ApplicationUser>(userId);
-            var ev = await repo.GetByIdAsync<Event>(eventId);
 
-            var eventUser = new EventUser() { ApplicationUser=user, UserId = userId, EventId = eventId, Event = ev};
-            await repo.AddAsync<EventUser>(eventUser);
+            await betService.CreateBetAsync(eventId, userId);
+
+            var ev = await repo.GetByIdAsync<Event>(eventId);
+            await repo.AddAsync<EventUser>(new EventUser()
+            {
+                ApplicationUser = user,
+                UserId = userId,
+                EventId = eventId,
+                Event = ev
+            });
 
             user.Coins -= ev.EntryCost;
 
@@ -137,12 +146,17 @@ namespace Duplex.Core.Services
         public async Task LeaveEvent(Guid eventId, string userId)
         {
             var user = await repo.AllReadonly<ApplicationUser>().Include(x => x.Events).FirstOrDefaultAsync(x => x.Id == userId);
+            var ev = await context.Events.AsNoTracking().FirstAsync(x=>x.Id == eventId);
 
             if (user != null)
             {
                 var eventUser = user.Events.First(x => x.EventId == eventId);
+                var bet = await betService.GetByEventAsync(eventId);
+                //var userBet = await repo.AllReadonly<UserBet>().FirstAsync(x => x.UserId == userId && x.Bet == bet);
 
+                bet.PrizePool -= ev.EntryCost;
                 context.EventsUsers.Remove(eventUser);
+                context.Bets.Remove(bet);
 
                 await repo.SaveChangesAsync();
             }

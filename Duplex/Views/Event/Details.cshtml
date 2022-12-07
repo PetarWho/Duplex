@@ -30,10 +30,19 @@
 
                 @if (!Model.Participants.Any(x => x.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) && x.EventId == Model.Id))
                 {
-                    <span class="buttons mt-1 mb-1">
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#joinEventModal@(Model.Id)" class="btn btn-primary">Join</button>
-                    </span>
-                    <partial name="_JoinEventModalPartial" model="@Model" />
+                    @if (Model.Participants.Count() < Model.TeamSize * 2)
+                    {
+                        <span class="buttons mt-1 mb-1">
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#joinEventModal@(Model.Id)" class="btn btn-primary">Join</button>
+                        </span>
+                        <partial name="_JoinEventModalPartial" model="@Model" />
+                    }
+                    else
+                    {
+                        <span class="buttons mt-1 mb-1">
+                            <button type="button" data-bs-toggle="modal" class="disabled btn btn-secondary">Full</button>
+                        </span>
+                    }
                 }
                 else
                 {

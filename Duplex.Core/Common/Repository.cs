@@ -183,5 +183,11 @@ namespace Duplex.Core.Common
             var entities = All<T>(deleteWhereClause);
             DeleteRange(entities);
         }
+
+        public async Task<T> AddAndReturnAsync<T>(T entity) where T : class
+        {
+            await DbSet<T>().AddAsync(entity);
+            return entity;
+        }
     }
 }

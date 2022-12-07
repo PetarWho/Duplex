@@ -1,4 +1,5 @@
 ﻿using Duplex.Core.Models.Event;
+using Duplex.Infrastructure.Data.Models.Account;
 
 namespace Duplex.Core.Contracts
 {

@@ -165,10 +165,15 @@ namespace Duplex.Controllers
         {
             try
             {
+                var ev = await eventService.GetEventWithParticipantsAsync(id);
+                if(ev.Participants.Count() == ev.TeamSize * 2)
+                {
+                    return RedirectToAction(nameof(All));
+                }
+
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var match = await repo.AllReadonly<EventUser>(x => x.UserId == userId && x.EventId == id).ToListAsync();
                 var user = await repo.GetByIdAsync<ApplicationUser>(userId);
-                var ev = await repo.GetByIdAsync<Event>(id);
 
                 if (match.Count == 0)
                 {

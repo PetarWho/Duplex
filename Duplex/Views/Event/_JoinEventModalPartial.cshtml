@@ -11,27 +11,39 @@
                 <h1 class="modal-title fs-5" id="joinEventModalLabel">Join Event</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            @if (UserManager.GetUserAsync(User).Result.Coins >= Model.EntryCost)
+            @if (Model.Participants.Count() < Model.TeamSize * 2)
             {
-                <div class="modal-body">
-                    Do you want to join <b>@Model.Name</b>?
-                    Entry cost is <b>@Model.EntryCost</b>. 
-                    <b class="color-red">Leaving event will result in a coin loss!</b>
-                </div>
-                <div class="modal-footer">
-                    <form method="post" asp-controller="Event" asp-action="Join" asp-route-id="@Model.Id">
+                @if (UserManager.GetUserAsync(User).Result.Coins >= Model.EntryCost)
+                {
+                    <div class="modal-body">
+                        Do you want to join <b>@Model.Name</b>?
+                        Entry cost is <b>@Model.EntryCost</b>.
+                        <b class="color-red">Leaving event will result in a coin loss!</b>
+                    </div>
+                    <div class="modal-footer">
+                        <form method="post" asp-controller="Event" asp-action="Join" asp-route-id="@Model.Id">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <input type="submit" class="btn btn-primary" value="Join" />
+                        </form>
+                    </div>
+                }
+                else
+                {
+                    <div class="modal-body">
+                        You don't have enough coins to join <b>@Model.Name</b>
+                    </div>
+                    <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <input type="submit" class="btn btn-primary" value="Join" />
-                    </form>
-                </div>
+                    </div>
+                }
             }
             else
             {
                 <div class="modal-body">
-                   You don't have enough coins to join <b>@Model.Name</b>?
+                    Event is full. Try joining another one!
                 </div>
                 <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             }
         </div>

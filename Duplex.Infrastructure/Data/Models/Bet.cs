@@ -9,10 +9,6 @@ namespace Duplex.Infrastructure.Data.Models
         public Guid Id { get; set; }
 
         [Required]
-        [MinLength(3), MaxLength(40)]
-        public string Name { get; set; } = null!;
-
-        [Required]
         public DateTime CreatedOnUTC { get; set; }
 
         [Required]
@@ -21,7 +17,8 @@ namespace Duplex.Infrastructure.Data.Models
         public Event Event { get; set; } = null!;
 
         [Required]
-        [Range(10, 2000, ConvertValueInInvariantCulture = true)]
-        public int TotalPrize { get; set; }
+        [Range(0, 10000, ConvertValueInInvariantCulture = true)]
+        public int PrizePool { get; set; } = 0;
+        public IEnumerable<UserBet> UsersBets { get; set; } = new List<UserBet>();
     }
 }

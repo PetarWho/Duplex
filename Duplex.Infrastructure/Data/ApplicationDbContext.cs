@@ -14,6 +14,7 @@ namespace Duplex.Data
         public DbSet<Region> Regions { get; set; } = null!;
         public DbSet<Prize> Prizes { get; set; } = null!;
         public DbSet<EventUser> EventsUsers { get; set; } = null!;
+        public DbSet<UserBet> UsersBets { get; set; } = null!;
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -23,6 +24,9 @@ namespace Duplex.Data
         {
             builder.Entity<EventUser>()
                 .HasKey(k => new { k.UserId, k.EventId });
+
+            builder.Entity<UserBet>()
+                .HasKey(k => new { k.UserId, k.BetId });
 
             base.OnModelCreating(builder);
         }

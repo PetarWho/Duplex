@@ -52,6 +52,12 @@ namespace Duplex.Core.Common
         Task AddAsync<T>(T entity) where T : class;
 
         /// <summary>
+        /// Adds entity to the database
+        /// </summary>
+        /// <param name="entity">Entity to add</param>
+        Task<T> AddAndReturnAsync<T>(T entity) where T : class;
+
+        /// <summary>
         /// Ads collection of entities to the database
         /// </summary>
         /// <param name="entities">Enumerable list of entities</param>
