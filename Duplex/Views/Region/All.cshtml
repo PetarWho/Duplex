@@ -15,11 +15,10 @@
             <li class="list-group-item">
                 <h5 class="text-start text-wrap p-2 float-start"><span>@reg.Name</span></h5>
                 <span class="float-end buttons">
-                    <a asp-controller="Region" asp-action="Edit" asp-route-id="@reg.Id"
-                   class="btn btn-warning">Edit</a>
-                    <a asp-controller="Region" asp-action="Delete" asp-route-id="@reg.Id"
-                   class="btn btn-danger">Delete</a>
+                    <a asp-controller="Region" asp-action="Edit" asp-route-id="@reg.Id" class="btn btn-warning">Edit</a>
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#deleteRegionModal@(reg.Id)" class="btn btn-danger">Delete</button>
                 </span>
+                <partial name="_DeleteRegionModalPartial" model="@reg" />
             </li>
         }
     </ul>

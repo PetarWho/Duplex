@@ -3,6 +3,7 @@ using Duplex.Core.Contracts;
 using Duplex.Core.Models.Prize;
 using Duplex.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace Duplex.Core.Services
 {
@@ -48,6 +49,11 @@ namespace Duplex.Core.Services
             await repo.SaveChangesAsync();
         }
 
+        public async Task<bool> Exists(Guid pId)
+        {
+            return await repo.AllReadonly<Prize>().AnyAsync(e => e.Id == pId);
+        }
+
         public async Task<IEnumerable<PrizeModel>> GetAllAsync()
         {
             return await repo.AllReadonly<Prize>().Select(p => new PrizeModel()
@@ -61,9 +67,19 @@ namespace Duplex.Core.Services
             }).ToListAsync();
         }
 
-        public async Task<Prize> GetPrizeAsync(Guid pId)
+        public async Task<PrizeModel> GetPrizeAsync(Guid pId)
         {
-            return await repo.GetByIdAsync<Prize>(pId);
+            var prize = await repo.GetByIdAsync<Prize>(pId);
+
+            return new PrizeModel()
+            {
+                Id = prize.Id,
+                Name = prize.Name,
+                Cost= prize.Cost,
+                ImageUrl = prize.ImageUrl,
+                Description = prize.Description,
+                CreatedOnUTC = prize.CreatedOnUTC
+            };
         }
     }
 }

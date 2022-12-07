@@ -56,8 +56,16 @@ namespace Duplex.Controllers
         [HttpGet]
         public async Task<IActionResult> All()
         {
-            var model = await eventService.GetAllAsync();
-            return View(model.OrderByDescending(x=>x.CreatedOnUTC));
+            try
+            {
+                var model = await eventService.GetAllAsync();
+                return View(model.OrderByDescending(x => x.CreatedOnUTC));
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("_502", "Error", new { area = "Errors" });
+            }
+
         }
 
         #endregion
@@ -65,11 +73,18 @@ namespace Duplex.Controllers
         #region Delete
 
         [Authorize(Roles = "Admin")]
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await eventService.DeleteEventAsync(id);
-            return RedirectToAction(nameof(All));
+            try
+            {
+                await eventService.DeleteEventAsync(id);
+                return RedirectToAction(nameof(All));
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("_502", "Error", new { area = "Errors" });
+            }
         }
 
         #endregion
@@ -81,7 +96,7 @@ namespace Duplex.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
 
-            if ((await eventService.Exists(id)) == false)
+            if (!await eventService.Exists(id))
             {
                 return RedirectToAction(nameof(All));
             }
@@ -90,7 +105,7 @@ namespace Duplex.Controllers
 
             TempData["eid"] = id;
 
-            
+
             return View(model);
         }
 
@@ -125,26 +140,19 @@ namespace Duplex.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
-            if(id == Guid.Empty)
+            if (id == Guid.Empty)
             {
                 return RedirectToAction("Index", "Home");
             }
-
-            var ev = await eventService.GetEventWithParticipantsAsync(id);
-
-            var model = new DetailsEventModel()
+            try
             {
-                Id = ev.Id,
-                Name = ev.Name,
-                Description = ev.Description,
-                TeamSize = ev.TeamSize,
-                EntryCost = ev.EntryCost,
-                ImageUrl = ev.ImageUrl,
-                CreatedOnUTC = ev.CreatedOnUTC,
-                Participants = ev.Participants
-            };
-
-            return View(model);
+                var model = await eventService.GetEventWithParticipantsAsync(id);
+                return View(model);
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("_502", "Error", new { area = "Errors" });
+            }
         }
 
         #endregion
@@ -155,14 +163,31 @@ namespace Duplex.Controllers
         [HttpGet]
         public async Task<IActionResult> Join(Guid id)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var match = await repo.AllReadonly<EventUser>(x => x.UserId == userId && x.EventId == id).ToListAsync();
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var match = await repo.AllReadonly<EventUser>(x => x.UserId == userId && x.EventId == id).ToListAsync();
+                var user = await repo.GetByIdAsync<ApplicationUser>(userId);
+                var ev = await repo.GetByIdAsync<Event>(id);
 
-            if (match.Count==0){
-                await eventService.JoinEvent(id, userId);
+                if (match.Count == 0)
+                {
+                    if (user.Coins >= ev.EntryCost)
+                    {
+                        await eventService.JoinEvent(id, userId);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Not enough coins!");
+                    }
+                }
+
+                return RedirectToAction("Joined", "Event", new { userId = userId });
             }
-
-            return RedirectToAction("Joined", "Event", new { userId = userId });
+            catch (Exception)
+            {
+                return RedirectToAction("_502", "Error", new { area = "Errors" });
+            }
         }
 
         #endregion
@@ -173,15 +198,23 @@ namespace Duplex.Controllers
         [HttpGet]
         public async Task<IActionResult> Leave(Guid id)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var match = await repo.AllReadonly<EventUser>(x => x.UserId == userId && x.EventId == id).ToListAsync();
-
-            if (match.Count != 0)
+            try
             {
-                await eventService.LeaveEvent(id, userId);
-            }
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return RedirectToAction("Joined", "Event", new { userId = userId});
+                var match = await repo.AllReadonly<EventUser>(x => x.UserId == userId && x.EventId == id).ToListAsync();
+
+                if (match.Count != 0)
+                {
+                    await eventService.LeaveEvent(id, userId);
+                }
+
+                return RedirectToAction("Joined", "Event", new { userId = userId });
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("_502", "Error", new { area = "Errors" });
+            }
         }
 
         #endregion
@@ -193,18 +226,24 @@ namespace Duplex.Controllers
         {
             var user = await repo.GetByIdAsync<ApplicationUser>(userId);
 
-            var model = await repo.AllReadonly<EventUser>()
-                .Include(x => x.Event).Where(x=>x.UserId==userId).Select(x=> new JoinedEventModel()
+            if (user == null)
             {
+                return RedirectToAction("_502", "Error", new { area = "Errors" });
+            }
+
+            var model = await repo.AllReadonly<EventUser>()
+                .Include(x => x.Event).Where(x => x.UserId == userId).Select(x => new JoinedEventModel()
+                {
                     EventId = x.Event.Id,
-                    EventName=x.Event.Name,
+                    EventName = x.Event.Name,
                     EventImageUrl = x.Event.ImageUrl,
-                    TeamSize=x.Event.TeamSize,
+                    TeamSize = x.Event.TeamSize,
                     Description = x.Event.Description,
                     EntryCost = x.Event.EntryCost,
                     CreatedOnUTC = x.Event.CreatedOnUTC,
-                    UserName = user.UserName
-            }).ToListAsync();
+                    UserName = user.UserName,
+                    Participants = x.Event.Participants
+                }).ToListAsync();
 
             return View(model);
         }

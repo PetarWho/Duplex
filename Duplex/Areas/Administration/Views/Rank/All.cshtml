@@ -17,9 +17,9 @@
                 <span class="float-end buttons">
                     <a asp-area="Administration" asp-controller="Rank" asp-action="Edit" asp-route-id="@rank.Id"
                    class="btn btn-warning">Edit</a>
-                    <a asp-area="Administration" asp-controller="Rank" asp-action="Delete" asp-route-id="@rank.Id"
-                   class="btn btn-danger">Delete</a>
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#deleteRankModal@(rank.Id)" class="btn btn-danger">Delete</button>
                 </span>
+                <partial name="_DeleteRankModalPartial" model="@rank" />
             </li>
         }
     </ul>

@@ -26,14 +26,16 @@
                     <div class="card-footer">
                         <small class="text-muted">Added on @prize.CreatedOnUTC.ToShortDateString()</small>
                     </div>
-                    <span class="float-end buttons">
+                    <div class="float-end buttons">
                         <a asp-controller="Prize" asp-action="Details" asp-route-id="@prize.Id" class="btn btn-primary">Details</a>
                         @if (User.IsInRole("Admin"))
                         {
                             <a asp-controller="Prize" asp-action="Edit" asp-route-id="@prize.Id" class="btn btn-warning">Edit</a>
-                            <a asp-controller="Prize" asp-action="Delete" asp-route-id="@prize.Id" class="btn btn-danger">Delete</a>
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#deletePrizeModal@(prize.Id)" class="btn btn-danger">Delete</button>
+
+                            <partial name="_DeletePrizeModalPartial" model="@prize"/>
                         }
-                    </span>
+                    </div>
                 </div>
             </div>
         }

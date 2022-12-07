@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Duplex.Core.Models.Administration.Rank
 {
@@ -9,6 +8,6 @@ namespace Duplex.Core.Models.Administration.Rank
         public string UserId { get; set; } = null!;
 
         public string RankId { get; set; } = null!;
-        public IEnumerable<IdentityRole> Ranks { get; set; } = new List<IdentityRole>();
+        public IEnumerable<RankModel> Ranks { get; set; } = new List<RankModel>();
     }
 }

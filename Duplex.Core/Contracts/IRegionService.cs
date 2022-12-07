@@ -1,5 +1,4 @@
 ﻿using Duplex.Core.Models;
-using Duplex.Infrastructure.Data.Models;
 
 namespace Duplex.Core.Contracts
 {
@@ -7,8 +6,9 @@ namespace Duplex.Core.Contracts
     {
         Task AddRegionAsync(RegionModel model);
         Task<IEnumerable<RegionModel>> GetAllAsync();
-        Task<Region> GetRegionAsync(int regId);
+        Task<RegionModel> GetRegionAsync(int regId);
         Task EditRegionAsync(RegionModel model);
         Task DeleteRegionAsync(int regId);
+        Task<bool> Exists(int regId);
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Duplex.Core.Models.Event
+﻿using Duplex.Infrastructure.Data.Models;
+
+namespace Duplex.Core.Models.Event
 {
     public class JoinedEventModel
     {
@@ -10,5 +12,7 @@
         public string EventImageUrl { get; set; } = null!;
         public DateTime CreatedOnUTC { get; set; }
         public string UserName { get; set; } = null!;
+        public ICollection<EventUser> Participants { get; set; } = new HashSet<EventUser>();
+
     }
 }

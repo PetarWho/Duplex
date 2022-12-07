@@ -1,4 +1,6 @@
-﻿namespace Duplex.Core.Models.Event
+﻿using Duplex.Infrastructure.Data.Models;
+
+namespace Duplex.Core.Models.Event
 {
     public class EventModel
     {
@@ -9,5 +11,6 @@
         public int TeamSize { get; set; }
         public string ImageUrl { get; set; } = null!;
         public DateTime CreatedOnUTC { get; set; }
+        public IEnumerable<EventUser> Participants { get; set; } = new HashSet<EventUser>();
     }
 }

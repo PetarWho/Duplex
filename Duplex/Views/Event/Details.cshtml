@@ -1,6 +1,6 @@
 ﻿@using Duplex.Core.Models.Event
 @using System.Security.Claims
-@model DetailsEventModel
+@model EventModel
 
 @{
     ViewBag.Title = "Event Details";
@@ -18,6 +18,10 @@
             <img class="d-inline" src="/static/pics/team-size.png" style="max-width:20px; padding-bottom:1px;">
             <strong class="card-subtitle d-inline">@Model.TeamSize</strong>
         </span>
+        <div>
+            <img class="d-inline" src="/static/pics/team-size.png" style="max-width:20px; padding-bottom:1px;">
+            <strong class="card-subtitle d-inline">@Model.Participants.Count()/@(Model.TeamSize * 2)</strong>
+        </div>
         <p class="card-text">@Model.Description</p>
         <p class="card-text"><small class="text-muted">Created on @Model.CreatedOnUTC.ToShortDateString()</small></p>
         @if (User.Identity != null && User.Identity.IsAuthenticated)
@@ -41,13 +45,13 @@
                 @if (User.IsInRole("Admin"))
                 {
                     <span class="buttons mt-1 mb-1">
-                        <a class="btn btn-warning" asp-controller="Event" asp-action="Edit" asp-route-id="@Model.Id"
-                   class="btn btn-primary">Edit</a>
+                        <a asp-controller="Event" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
                     </span>
                     <span class="buttons mt-1 mb-1">
-                        <a class="btn btn-danger" asp-controller="Event" asp-action="Delete" asp-route-id="@Model.Id"
-                   class="btn btn-primary">Delete</a>
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#deleteEventModal@(Model.Id)" class="btn btn-danger">Delete</button>
                     </span>
+
+                    <partial name="_DeleteEventModalPartial" model="@Model" />
                 }
             </div>
         }

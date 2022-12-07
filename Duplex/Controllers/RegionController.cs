@@ -1,5 +1,6 @@
 ﻿using Duplex.Core.Contracts;
 using Duplex.Core.Models;
+using Duplex.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -48,19 +49,33 @@ namespace Duplex.Controllers
         [HttpGet]
         public async Task<IActionResult> All()
         {
-            var model = await regionService.GetAllAsync();
-            return View(model);
+            try
+            {
+                var model = await regionService.GetAllAsync();
+            return View(model.OrderBy(x=>x.Name));
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("_502", "Error", new { area = "Errors" });
+            }
         }
 
         #endregion
 
         #region Delete
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
+            try
+            {
             await regionService.DeleteRegionAsync(id);
             return RedirectToAction(nameof(All));
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("_502", "Error", new { area = "Errors" });
+            }
         }
 
         #endregion
@@ -70,19 +85,12 @@ namespace Duplex.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var response = await regionService.GetRegionAsync(id);
-
-            if (response == null)
+            if (!await regionService.Exists(id))
             {
-                throw new ArgumentException("Model is null!");
+                return RedirectToAction(nameof(All));
             }
 
-            var model = new RegionModel()
-            {
-                Id = id,
-                Name = response.Name,
-                Code = response.Code
-            };
+            var model = await regionService.GetRegionAsync(id);
 
             TempData["rid"] = model.Id;
             return View(model);

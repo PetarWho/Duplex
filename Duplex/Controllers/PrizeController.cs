@@ -51,8 +51,15 @@ namespace Duplex.Controllers
         [HttpGet]
         public async Task<IActionResult> All()
         {
-            var model = await prizeService.GetAllAsync();
-            return View(model.OrderByDescending(x => x.CreatedOnUTC));
+            try
+            {
+                var model = await prizeService.GetAllAsync();
+                return View(model.OrderByDescending(x => x.CreatedOnUTC));
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("_502", "Error", new { area = "Errors" });
+            }
         }
 
         #endregion
@@ -60,11 +67,18 @@ namespace Duplex.Controllers
         #region Delete
 
         [Authorize(Roles = "Admin")]
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await prizeService.DeletePrizeAsync(id);
-            return RedirectToAction(nameof(All));
+            try
+            {
+                await prizeService.DeletePrizeAsync(id);
+                return RedirectToAction(nameof(All));
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("_502", "Error", new { area = "Errors" });
+            }
         }
 
         #endregion
@@ -75,12 +89,12 @@ namespace Duplex.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var response = await prizeService.GetPrizeAsync(id);
-
-            if (response == null)
+            if (!await prizeService.Exists(id))
             {
-                throw new ArgumentException("Model is null!");
+                return RedirectToAction(nameof(All));
             }
+
+            var response = await prizeService.GetPrizeAsync(id);
 
             var model = new EditPrizeModel()
             {
@@ -131,19 +145,15 @@ namespace Duplex.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var prize = await prizeService.GetPrizeAsync(id);
-
-            var model = new PrizeModel()
+            try
             {
-                Id = prize.Id,
-                Name = prize.Name,
-                Description = prize.Description,
-                Cost = prize.Cost,
-                ImageUrl = prize.ImageUrl,
-                CreatedOnUTC = prize.CreatedOnUTC,
-            };
-
-            return View(model);
+                var model = await prizeService.GetPrizeAsync(id);
+                return View(model);
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("_502", "Error", new { area = "Errors" });
+            }
         }
 
         #endregion

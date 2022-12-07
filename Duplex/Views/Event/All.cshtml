@@ -25,19 +25,25 @@
                             <img class="d-inline" src="/static/pics/team-size.png" style="max-width:20px; padding-bottom:1px;">
                             <strong class="card-subtitle d-inline">@ev.TeamSize</strong>
                         </span>
+                        <div>
+                            <img class="d-inline" src="/static/pics/team-size.png" style="max-width:20px; padding-bottom:1px;">
+                            <strong class="card-subtitle d-inline">@ev.Participants.Count()/@(ev.TeamSize * 2)</strong>
+                        </div>
                     </div>
                     <div class="card-footer">
                         <small class="text-muted">Created on @ev.CreatedOnUTC.ToShortDateString()</small>
                     </div>
 
-                    <span class="float-end buttons">
+                    <div class="float-end buttons">
                         <a asp-controller="Event" asp-action="Details" asp-route-id="@ev.Id" class="btn btn-primary">Details</a>
                         @if (User.IsInRole("Admin"))
                         {
                             <a asp-controller="Event" asp-action="Edit" asp-route-id="@ev.Id" class="btn btn-warning">Edit</a>
-                            <a asp-controller="Event" asp-action="Delete" asp-route-id="@ev.Id" class="btn btn-danger">Delete</a>
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#deleteEventModal@(ev.Id)" class="btn btn-danger">Delete</button>
+
+                            <partial name="_DeleteEventModalPartial" model="@ev" />
                         }
-                    </span>
+                    </div>
                 </div>
             </div>
         }

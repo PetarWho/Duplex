@@ -32,5 +32,9 @@ namespace Duplex.Areas.Errors.Controllers
         {
             return View("400");
         }
+        public IActionResult _502()
+        {
+            return View("502");
+        }
     }
 }

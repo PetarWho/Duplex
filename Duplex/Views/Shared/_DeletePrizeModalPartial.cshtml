@@ -1,0 +1,22 @@
+﻿@using Duplex.Core.Models.Prize
+@model PrizeModel
+
+<div class="modal fade" id="deletePrizeModal@(Model.Id)" tabindex="-1" aria-labelledby="deletePrizeModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="deletePrizeModalLabel">Delete Prize</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete @Model.Name?
+            </div>
+            <div class="modal-footer">
+                <form method="post" asp-controller="Prize" asp-action="Delete" asp-route-id="@Model.Id">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-danger" value="Delete" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

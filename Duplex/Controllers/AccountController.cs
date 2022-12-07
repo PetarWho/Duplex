@@ -57,7 +57,7 @@ namespace Duplex.Controllers
 
             var model = new RegisterViewModel()
             {
-                Regions = repo.AllReadonly<Region>()
+                Regions = repo.AllReadonly<Region>().Where(x=>x.Name != "Unknown").OrderBy(x => x.Name).ToList()
             };
 
             return View(model);
@@ -202,10 +202,7 @@ namespace Duplex.Controllers
             var email = info.Principal.FindFirstValue(ClaimTypes.Email);
             var applicationUser = repo.AllReadonly<ApplicationUser>().FirstOrDefault(x => x.Email == email);
 
-            if(applicationUser == null)
-            {
-                return RedirectToAction("_404", "Error", new { area = "Errors" });
-            }
+
             // If the user already has a login (i.e if there is a record in AspNetUserLogins
             // table) then sign-in the user with this external login provider
             var signInResult = await signInManager.ExternalLoginSignInAsync(info.LoginProvider,
@@ -214,6 +211,10 @@ namespace Duplex.Controllers
 
             if (signInResult.Succeeded)
             {
+                if (applicationUser == null)
+                {
+                    return RedirectToAction("_404", "Error", new { area = "Errors" });
+                }
                 TempData["UserImage"] = applicationUser.Image;
                 return LocalRedirect(returnUrl);
 

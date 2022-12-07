@@ -3,6 +3,7 @@ using Duplex.Core.Contracts;
 using Duplex.Core.Models;
 using Duplex.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace Duplex.Core.Services
 {
@@ -44,6 +45,11 @@ namespace Duplex.Core.Services
             await repo.SaveChangesAsync();
         }
 
+        public async Task<bool> Exists(int regId)
+        {
+            return await repo.AllReadonly<Region>().AnyAsync(e => e.Id == regId);
+        }
+
         public async Task<IEnumerable<RegionModel>> GetAllAsync()
         {
             var regions = await repo.AllReadonly<Region>().ToListAsync();
@@ -56,9 +62,16 @@ namespace Duplex.Core.Services
             });
         }
 
-        public async Task<Region> GetRegionAsync(int regId)
+        public async Task<RegionModel> GetRegionAsync(int regId)
         {
-            return await repo.GetByIdAsync<Region>(regId);
+            var reg = await repo.GetByIdAsync<Region>(regId);
+
+            return new RegionModel()
+            {
+                Id = reg.Id,
+                Name = reg.Name,
+                Code = reg.Code
+            };
         }
     }
 }

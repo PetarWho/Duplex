@@ -7,7 +7,7 @@ namespace Duplex.Core.Contracts
         Task AddEventAsync(AddEventModel model);
         Task<IEnumerable<EventModel>> GetAllAsync();
         Task<EditEventModel> GetEventAsync(Guid eId);
-        Task<DetailsEventModel> GetEventWithParticipantsAsync(Guid eId);
+        Task<EventModel> GetEventWithParticipantsAsync(Guid eId);
         Task EditEventAsync(EditEventModel model);
         Task DeleteEventAsync(Guid eId);
         Task<bool> Exists(Guid eId);

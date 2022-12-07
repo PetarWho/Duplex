@@ -54,31 +54,37 @@ namespace Duplex.Areas.Administration.Controllers
         [HttpGet]
         public async Task<IActionResult> All()
         {
-            var model = await rankService.GetAllAsync();
-            return View(model.Select(r => new RankModel()
+            try
             {
-                Id = r.Id,
-                Name = r.Name,
-                ConcurrencyStamp = r.ConcurrencyStamp
-            }).ToList());
+                var model = await rankService.GetAllAsync();
+                return View(model.Select(r => new RankModel()
+                {
+                    Id = r.Id,
+                    Name = r.Name
+                }).ToList());
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("_502", "Error", new { area = "Errors" });
+            }
         }
 
         #endregion
 
         #region Delete
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
             try
             {
                 await rankService.DeleteRankAsync(id);
+                return RedirectToAction(nameof(All));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ModelState.AddModelError("", ex.Message);
+                return RedirectToAction("_502", "Error", new { area = "Errors" });
             }
-            return RedirectToAction(nameof(All));
         }
 
         #endregion
@@ -88,12 +94,12 @@ namespace Duplex.Areas.Administration.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            var response = await rankService.GetRankAsync(id);
-
-            if (response == null)
+            if(!await rankService.Exists(id))
             {
-                throw new ArgumentException("No such rank!");
+                return RedirectToAction("_502", "Error", new { area = "Errors" });
             }
+
+            var response = await rankService.GetRankAsync(id);
 
             var model = new RankModel()
             {
@@ -147,9 +153,12 @@ namespace Duplex.Areas.Administration.Controllers
         [HttpPost]
         public async Task<IActionResult> Set(SetRankModel model)
         {
-            var rnk = await rankService.Exists(model.RankId);
+            if(!await rankService.Exists(model.RankId))
+            {
+                return RedirectToAction("_502", "Error", new { area = "Errors" });
+            }
 
-            if (!ModelState.IsValid )
+            if (!ModelState.IsValid)
             {
                 model.Ranks = await rankService.GetAllAsync(); ;
                 return View(model);

@@ -26,11 +26,6 @@ namespace Duplex.Core.Services.Administration
         {
             var rank = await GetRankAsync(rankId);
 
-            if(rank == null)
-            {
-                throw new Exception("No such rank!");
-            }
-
             await roleManager.DeleteAsync(rank);
 
             await repo.SaveChangesAsync();
@@ -46,14 +41,18 @@ namespace Duplex.Core.Services.Administration
             await repo.SaveChangesAsync();
         }
 
-        public async Task<bool> Exists(string rankName)
+        public async Task<bool> Exists(string id)
         {
-            return await roleManager.RoleExistsAsync(rankName);
+            return await roleManager.Roles.AnyAsync(x => x.Id == id);
         }
 
-        public async Task<IEnumerable<IdentityRole>> GetAllAsync()
+        public async Task<IEnumerable<RankModel>> GetAllAsync()
         {
-            return await roleManager.Roles.ToListAsync();
+            return await roleManager.Roles.Select(x=> new RankModel()
+            {
+                Id = x.Id,
+                Name = x.Name,
+            }).ToListAsync();
         }
 
         public async Task<IdentityRole> GetRankAsync(string rankId)

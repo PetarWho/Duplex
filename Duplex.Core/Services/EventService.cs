@@ -56,8 +56,7 @@ namespace Duplex.Core.Services
 
         public async Task<bool> Exists(Guid eId)
         {
-            return await repo.AllReadonly<Event>()
-                .AnyAsync(e => e.Id == eId);
+            return await repo.AllReadonly<Event>().AnyAsync(e => e.Id == eId);
         }
 
         public async Task<IEnumerable<EventModel>> GetAllAsync()
@@ -70,7 +69,8 @@ namespace Duplex.Core.Services
                 EntryCost = e.EntryCost,
                 ImageUrl = e.ImageUrl,
                 TeamSize = e.TeamSize,
-                CreatedOnUTC = e.CreatedOnUTC
+                CreatedOnUTC = e.CreatedOnUTC,
+                Participants = e.Participants
             }).ToListAsync();
         }
 
@@ -85,14 +85,14 @@ namespace Duplex.Core.Services
                 EntryCost = result.EntryCost,
                 Description = result.Description,
                 ImageUrl = result.ImageUrl,
-                TeamSize = result.TeamSize
+                TeamSize = result.TeamSize,
             };
         }
 
-        public async Task<DetailsEventModel> GetEventWithParticipantsAsync(Guid eId)
+        public async Task<EventModel> GetEventWithParticipantsAsync(Guid eId)
         {
 #pragma warning disable CS8603 // Possible null reference return.
-            return await context.Events.Include(x => x.Participants).Select(x => new DetailsEventModel()
+            return await context.Events.Select(x => new EventModel()
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -123,9 +123,13 @@ namespace Duplex.Core.Services
 
         public async Task JoinEvent(Guid eventId, string userId)
         {
-            var eventUser = new EventUser() { UserId = userId, EventId = eventId };
+            var user = await repo.GetByIdAsync<ApplicationUser>(userId);
+            var ev = await repo.GetByIdAsync<Event>(eventId);
 
+            var eventUser = new EventUser() { ApplicationUser=user, UserId = userId, EventId = eventId, Event = ev};
             await repo.AddAsync<EventUser>(eventUser);
+
+            user.Coins -= ev.EntryCost;
 
             await repo.SaveChangesAsync();
         }

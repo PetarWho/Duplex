@@ -25,13 +25,16 @@
                                 <img class="d-inline" src="/static/pics/team-size.png" style="max-width:20px; padding-bottom:1px;">
                                 <strong class="card-subtitle d-inline">@ev.TeamSize</strong>
                             </span>
+                            <div>
+                                <img class="d-inline" src="/static/pics/team-size.png" style="max-width:20px; padding-bottom:1px;">
+                                <strong class="card-subtitle d-inline">@ev.Participants.Count/@(ev.TeamSize * 2)</strong>
+                            </div>
                         </div>
                         <div class="card-footer">
                             <small class="text-muted">Created on @ev.CreatedOnUTC.ToShortDateString()</small>
                         </div>
                         <span class="buttons mt-1 mb-1">
-                            <a asp-controller="Event" asp-action="Details" asp-route-id="@ev.EventId"
-                       class="btn btn-primary">Details</a>
+                            <a asp-controller="Event" asp-action="Details" asp-route-id="@ev.EventId" class="btn btn-primary">Details</a>
                         </span>
                     </div>
                 </div>
