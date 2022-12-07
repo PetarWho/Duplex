@@ -1,0 +1,23 @@
+﻿@using Duplex.Core.Models.Event
+@model EventModel
+
+<div class="modal fade" id="leaveEventModal@(Model.Id)" tabindex="-1" aria-labelledby="leaveEventModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="leaveEventModalLabel">Leave Event</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Leaving event will <b>NOT</b> restore coins!
+                Are you sure you want to leave <b>@Model.Name</b>?
+            </div>
+            <div class="modal-footer">
+                <form method="post" asp-controller="Event" asp-action="Leave" asp-route-id="@Model.Id">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-danger" value="Leave" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

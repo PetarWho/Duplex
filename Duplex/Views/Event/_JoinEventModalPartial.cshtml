@@ -1,0 +1,39 @@
+﻿@using Duplex.Core.Models.Event
+@using Duplex.Infrastructure.Data.Models.Account
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@model EventModel
+
+<div class="modal fade" id="joinEventModal@(Model.Id)" tabindex="-1" aria-labelledby="joinEventModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="joinEventModalLabel">Join Event</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            @if (UserManager.GetUserAsync(User).Result.Coins >= Model.EntryCost)
+            {
+                <div class="modal-body">
+                    Do you want to join <b>@Model.Name</b>?
+                    Entry cost is <b>@Model.EntryCost</b>. 
+                    <b class="color-red">Leaving event will result in a coin loss!</b>
+                </div>
+                <div class="modal-footer">
+                    <form method="post" asp-controller="Event" asp-action="Join" asp-route-id="@Model.Id">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <input type="submit" class="btn btn-primary" value="Join" />
+                    </form>
+                </div>
+            }
+            else
+            {
+                <div class="modal-body">
+                   You don't have enough coins to join <b>@Model.Name</b>?
+                </div>
+                <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

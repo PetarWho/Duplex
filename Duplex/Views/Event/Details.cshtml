@@ -31,16 +31,16 @@
                 @if (!Model.Participants.Any(x => x.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) && x.EventId == Model.Id))
                 {
                     <span class="buttons mt-1 mb-1">
-                        <a asp-controller="Event" asp-action="Join" asp-route-id="@Model.Id"
-                   class="btn btn-primary">Join</a>
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#joinEventModal@(Model.Id)" class="btn btn-primary">Join</button>
                     </span>
+                    <partial name="_JoinEventModalPartial" model="@Model" />
                 }
                 else
                 {
                     <span class="buttons mt-1 mb-1">
-                        <a asp-controller="Event" asp-action="Leave" asp-route-id="@Model.Id"
-                   class="btn btn-primary">Leave</a>
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#leaveEventModal@(Model.Id)" class="btn btn-primary">Leave</button>
                     </span>
+                    <partial name="_LeaveEventModalPartial" model="@Model" />
                 }
                 @if (User.IsInRole("Admin"))
                 {

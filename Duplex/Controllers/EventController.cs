@@ -160,7 +160,7 @@ namespace Duplex.Controllers
         #region Join
 
         [Authorize]
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Join(Guid id)
         {
             try
@@ -178,7 +178,7 @@ namespace Duplex.Controllers
                     }
                     else
                     {
-                        throw new ArgumentException("Not enough coins!");
+                        return RedirectToAction("_502", "Error", new { area = "Errors" });
                     }
                 }
 
@@ -195,7 +195,7 @@ namespace Duplex.Controllers
         #region Leave
 
         [Authorize]
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Leave(Guid id)
         {
             try
