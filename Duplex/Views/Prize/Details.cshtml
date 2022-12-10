@@ -19,6 +19,10 @@
         @if (User.Identity != null && User.Identity.IsAuthenticated)
         {
             <div class="buttons">
+                <span class="buttons mt-1 mb-1">
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#redeemPrizeModal@(Model.Id)" class="btn btn-primary">Redeem</button>
+                </span>
+                <partial name="_RedeemPrizeModalPartial" model="@Model" />
                 @if (User.IsInRole("Admin"))
                 {
                     <span class="buttons mt-1 mb-1">

@@ -4,6 +4,7 @@ using Duplex.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Duplex.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221210134819_AddedUserPrizeAcquireDate")]
+    partial class AddedUserPrizeAcquireDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -271,25 +273,18 @@ namespace Duplex.Data.Migrations
 
             modelBuilder.Entity("Duplex.Infrastructure.Data.Models.UserPrize", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("PrizeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("AcquiredOnUTC")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("PrizeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
+                    b.HasKey("UserId", "PrizeId");
 
                     b.HasIndex("PrizeId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("UsersPrizes");
                 });

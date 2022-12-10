@@ -293,6 +293,11 @@ namespace Duplex.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            if(user.Id != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                return RedirectToAction("_403", "Error", new { area = "Errors" });
+            }
+
             var rankIds = await context.UserRoles
                 .Where(ur => ur.UserId == user.Id)
                 .Select(ur => ur.RoleId)
@@ -420,7 +425,11 @@ namespace Duplex.Controllers
             user.PhoneNumber = model.PhoneNumber;
             user.Email = model.Email;
             user.NormalizedEmail = model.Email.ToUpperInvariant();
-            user.RegionId = model.RegionId;
+
+            if(user.RegionId == 12 && model.RegionId != 12)
+            {
+                user.RegionId = model.RegionId;
+            }
 
             await repo.SaveChangesAsync();
 

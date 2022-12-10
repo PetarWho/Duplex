@@ -30,6 +30,7 @@ namespace Duplex.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(AddEventModel model)
         {
             if (!ModelState.IsValid)
@@ -74,6 +75,7 @@ namespace Duplex.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id)
         {
             try
@@ -111,6 +113,7 @@ namespace Duplex.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, EditEventModel model)
         {
             if (!ModelState.IsValid)
@@ -161,6 +164,7 @@ namespace Duplex.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Join(Guid id)
         {
             try
@@ -201,6 +205,7 @@ namespace Duplex.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Leave(Guid id)
         {
             try

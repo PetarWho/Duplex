@@ -15,6 +15,7 @@ namespace Duplex.Data
         public DbSet<Prize> Prizes { get; set; } = null!;
         public DbSet<EventUser> EventsUsers { get; set; } = null!;
         public DbSet<UserBet> UsersBets { get; set; } = null!;
+        public DbSet<UserPrize> UsersPrizes { get; set; } = null!;
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

@@ -28,6 +28,6 @@ namespace Duplex.Infrastructure.Data.Models
         [Required]
         public DateTime CreatedOnUTC { get; set; }
         
-        ICollection<ApplicationUser> ApplicationUsers { get; set; } = new HashSet<ApplicationUser>();
+        ICollection<UserPrize> UserPrizes { get; set; } = new HashSet<UserPrize>();
     }
 }

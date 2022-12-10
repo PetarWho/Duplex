@@ -40,76 +40,90 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <div class="card mb-4">
-                    <div class="card-body text-center image-box">
-                        <img class="img-fluid" id="pfp" referrerpolicy="no-referrer" src="@Model.Image" alt="Profile Picture"
-                             style="width:15vw; border-radius:10px; margin-bottom:8px;">
-                        <input type="file" class="custom-file-input" name="file" accept=".jpg, .png, .jpeg" />
-                        <p id="selectedFile"></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-2">
-                <div class="card mb-2">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col" style="display:flex; justify-content:space-around;">
-                                <a asp-action="ConfirmEmail" asp-controller="Account">
-                                    <img class="verified-icons" src=@(Model.EmailConfirmed == true? "/static/pics/profile/mail-verified.png" : "/static/pics/profile/mail-not-verified.png") />
-                                </a>
-                                <img class="verified-icons" src=@(Model.PhoneConfirmed == true? "/static/pics/profile/phone-verified.png" : "/static/pics/profile/phone-not-verified.png") />
-                                <img class="verified-icons" src=@(Model.TwoFactorEnabled == true? "/static/pics/profile/2fa-verified.png" : "/static/pics/profile/2fa-not-verified.png") />
-                            </div>
+            <div class="row">
+
+                <div class="col-lg-4">
+                    <div class="card mb-4">
+                        <div class="card-body text-center image-box">
+                            <img class="img-fluid" id="pfp" referrerpolicy="no-referrer" src="@Model.Image" alt="Profile Picture"
+                                 style="width:15vw; border-radius:10px; margin-bottom:8px;">
+                            <input type="file" class="custom-file-input" name="file" accept=".jpg, .png, .jpeg" />
+                            <p id="selectedFile"></p>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="card mb-1 background-lightgray fw-bold">
-                    <div class="card-body">
-                        <div class="row">
-                            @if (Model.Region == "Unknown")
-                            {
-                                <p class="text-center">Region:</p>
-                                <p class="text-danger">Choose carefully. To change again contact support!</p>
-                                <div class="text-center mb-3">
-                                    <select asp-for="@Model.RegionId" class="form-control">
-                                        @foreach (var region in Model.Regions.OrderBy(x => x.Name))
-                                        {
-                                            if (region.Name == "Unknown")
-                                            {
-                                                <option selected="selected" value="@region.Id">-</option>
-                                            }
-                                            else
-                                            {
-                                                <option value="@region.Id">@region.Name</option>
-                                            }
-                                        }
-                                    </select>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="col" style="display:flex; justify-content:space-around;">
-                                    <p class="m-0">@Model.Region</p>
-                                </div>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="card mb-1 fw-bold">
-                    <a class="text-decoration-none hover-darkorange color-green" asp-action="Joined" asp-controller="Event" asp-route-userId="@Model.Id">
+                <div class="col-lg-2">
+                    <div class="card mb-2">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col" style="display:flex; justify-content:space-around;">
-                                    Your joined events >>
+                                    <a asp-action="ConfirmEmail" asp-controller="Account">
+                                        <img class="verified-icons" src=@(Model.EmailConfirmed == true? "/static/pics/profile/mail-verified.png" : "/static/pics/profile/mail-not-verified.png") />
+                                    </a>
+                                    <img class="verified-icons" src=@(Model.PhoneConfirmed == true? "/static/pics/profile/phone-verified.png" : "/static/pics/profile/phone-not-verified.png") />
+                                    <img class="verified-icons" src=@(Model.TwoFactorEnabled == true? "/static/pics/profile/2fa-verified.png" : "/static/pics/profile/2fa-not-verified.png") />
                                 </div>
                             </div>
                         </div>
-                    </a>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="card mb-1 background-lightgray fw-bold">
+                        <div class="card-body">
+                            <div class="row">
+                                @if (Model.Region == "Unknown")
+                                {
+                                    <p class="text-center">Region:</p>
+                                    <p class="text-danger">Choose carefully. To change again contact support!</p>
+                                    <div class="text-center mb-3">
+                                        <select asp-for="@Model.RegionId" class="form-control">
+                                            @foreach (var region in Model.Regions.OrderBy(x => x.Name))
+                                            {
+                                                if (region.Name == "Unknown")
+                                                {
+                                                    <option selected="selected" value="@region.Id">-</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@region.Id">@region.Name</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col" style="display:flex; justify-content:space-around;">
+                                        <p class="m-0">@Model.Region</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="card mb-1 fw-bold">
+                        <a class="text-decoration-none hover-darkorange color-green" asp-action="Joined" asp-controller="Event" asp-route-userId="@Model.Id">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col" style="display:flex; justify-content:space-around;">
+                                        Your joined events >>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card mb-1 fw-bold">
+                        <a class="text-decoration-none hover-darkorange color-green" asp-action="Inventory" asp-controller="Prize" asp-route-userId="@Model.Id">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col" style="display:flex; justify-content:space-around;">
+                                        Your Inventory >>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="row" style="margin:0.3vh 0 1vw 0;">

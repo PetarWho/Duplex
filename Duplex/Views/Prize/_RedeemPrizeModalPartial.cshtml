@@ -1,0 +1,38 @@
+﻿@using Duplex.Core.Models.Prize
+@using Duplex.Infrastructure.Data.Models.Account
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@model PrizeModel
+
+<div class="modal fade" id="redeemPrizeModal@(Model.Id)" tabindex="-1" aria-labelledby="redeemPrizeModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="redeemPrizeModalLabel">Redeem Prize</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            @if (UserManager.GetUserAsync(User).Result.Coins >= Model.Cost)
+            {
+                <div class="modal-body">
+                    Do you want to purchase <b>@Model.Name</b> for <b>@Model.Cost</b>?
+                    <b class="color-red">There are no refunds!</b>
+                </div>
+                <div class="modal-footer">
+                    <form method="post" asp-controller="Prize" asp-action="Redeem" asp-route-id="@Model.Id">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <input type="submit" class="btn btn-primary" value="Redeem" />
+                    </form>
+                </div>
+            }
+            else
+            {
+                <div class="modal-body">
+                    You don't have enough coins to join <b>@Model.Name</b>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
