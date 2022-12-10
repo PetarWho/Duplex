@@ -47,9 +47,24 @@
                 <button id="registerSubmit" type="submit" class="btn btn-primary">Register</button>
             </div>
         </form>
-        <fb:login-button scope="public_profile,email"
-                         onlogin="checkLoginState();">
-        </fb:login-button>
+        @{
+            if (Model.ExternalLogins.Count > 0)
+            {
+                <form method="post" asp-action="ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl">
+                    <div class="text-center mt-2">
+                        @foreach (var provider in Model.ExternalLogins)
+                        {
+                            <button type="submit" class="btn btn-outline-dark provider-btn" name="provider" value="@provider.Name"
+                            title="Login using your @provider.DisplayName account">
+                                <img style="margin-bottom:3px; width:20px; margin-right:5px" alt="Google sign-in" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+                                Sign in with @provider.DisplayName
+                            </button>
+                        }
+                    </div>
+                    <div id="my-signin2"></div>
+                </form>
+            }
+        }
     </div>
 </div>
 

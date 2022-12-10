@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Authentication;
+using System.ComponentModel.DataAnnotations;
 
 namespace Duplex.Models.Account
 {
@@ -28,6 +29,8 @@ namespace Duplex.Models.Account
         public string ConfirmPassword { get; set; } = null!;
         public int RegionId { get; set; }
 
+        public string? ReturnUrl { get; set; }
+        public IList<AuthenticationScheme> ExternalLogins { get; set; } = new List<AuthenticationScheme>();
         public IEnumerable<Infrastructure.Data.Models.Region> Regions { get; set; } = new List<Infrastructure.Data.Models.Region>();
     }
 }

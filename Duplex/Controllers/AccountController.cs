@@ -9,7 +9,6 @@ using Duplex.Infrastructure.Data.Models.Account;
 using Duplex.Models.Account;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
-using Google.Apis.Drive.v3.Data;
 using Google.Apis.Services;
 using Google.Apis.Upload;
 using Microsoft.AspNetCore.Authorization;
@@ -17,8 +16,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using System.Net.Mail;
-using System.Net;
 
 namespace Duplex.Controllers
 {
@@ -50,7 +47,7 @@ namespace Duplex.Controllers
 
         #region Register
         [HttpGet]
-        public IActionResult Register()
+        public async Task<IActionResult> Register(string returnUrl)
         {
             if (User?.Identity?.IsAuthenticated ?? false)
             {
@@ -59,6 +56,8 @@ namespace Duplex.Controllers
 
             var model = new RegisterViewModel()
             {
+                ReturnUrl = returnUrl,
+                ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList(),
                 Regions = repo.AllReadonly<Region>().Where(x => x.Name != "Unknown").OrderBy(x => x.Name).ToList()
             };
 
@@ -70,7 +69,9 @@ namespace Duplex.Controllers
         {
             if (!ModelState.IsValid)
             {
-                model.Regions = repo.AllReadonly<Region>();
+                model.ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                model.Regions = repo.AllReadonly<Region>().Where(x => x.Name != "Unknown").OrderBy(x => x.Name).ToList();
+
                 return View(model);
             }
 
@@ -95,6 +96,7 @@ namespace Duplex.Controllers
                 ModelState.AddModelError("", item.Description);
             }
 
+            model.ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             model.Regions = repo.AllReadonly<Region>();
             return View(model);
         }
@@ -124,6 +126,8 @@ namespace Duplex.Controllers
         {
             if (!ModelState.IsValid)
             {
+                model.ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
                 return View(model);
             }
 
@@ -140,6 +144,7 @@ namespace Duplex.Controllers
                 }
             }
             ModelState.AddModelError("", "Invalid Login");
+            model.ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             return View(model);
         }
 
@@ -467,6 +472,10 @@ namespace Duplex.Controllers
             //}
 
             //return RedirectToAction("Index", "Home");
+
+
+
+            //      -V- SENDGRID -V-
 
             //    ApplicationUser user;
             //    if (userId == null)
