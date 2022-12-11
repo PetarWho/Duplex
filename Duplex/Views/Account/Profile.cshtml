@@ -1,6 +1,10 @@
-﻿@model ProfileViewModel
+﻿@using Duplex.Infrastructure.Data.Models.Account
+@using Microsoft.AspNetCore.Identity
+@model ProfileViewModel
+@inject UserManager<ApplicationUser> UserManager
 @{
     ViewData["Title"] = "Profile";
+    var user = await UserManager.GetUserAsync(User);
 }
 
 <section class="background-whitesmoke">
@@ -23,6 +27,21 @@
                                             {
                                                 case "Admin":
                                                     <p class="mb-0 color-darkred d-inline fs-5 fw-bold">@rank</p>
+                                                    break;
+                                                case "Diamond":
+                                                    <p class="mb-0 color-deepskyblue d-inline fs-5 fw-bold">@rank</p>
+                                                    break;
+                                                case "Platinum":
+                                                    <p class="mb-0 color-mediumseagreen d-inline fs-5 fw-bold">@rank</p>
+                                                    break;
+                                                case "Gold":
+                                                    <p class="mb-0 color-goldenrod d-inline fs-5 fw-bold">@rank</p>
+                                                    break;
+                                                case "Silver":
+                                                    <p class="mb-0 color-silver d-inline fs-5 fw-bold">@rank</p>
+                                                    break;
+                                                case "Bronze":
+                                                    <p class="mb-0 color-sandybrown d-inline fs-5 fw-bold">@rank</p>
                                                     break;
                                                 default:
                                                     <p class="mb-0 d-inline fs-5 color-darkgrey">@rank</p>
@@ -57,11 +76,12 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col" style="display:flex; justify-content:space-around;">
-                                    <a asp-action="ConfirmEmail" asp-controller="Account">
-                                        <img class="verified-icons" src=@(Model.EmailConfirmed == true? "/static/pics/profile/mail-verified.png" : "/static/pics/profile/mail-not-verified.png") />
-                                    </a>
+                                    <img class="verified-icons" src=@(Model.EmailConfirmed == true? "/static/pics/profile/mail-verified.png" : "/static/pics/profile/mail-not-verified.png") />
                                     <img class="verified-icons" src=@(Model.PhoneConfirmed == true? "/static/pics/profile/phone-verified.png" : "/static/pics/profile/phone-not-verified.png") />
                                     <img class="verified-icons" src=@(Model.TwoFactorEnabled == true? "/static/pics/profile/2fa-verified.png" : "/static/pics/profile/2fa-not-verified.png") />
+                                    <a data-bs-toggle="modal" data-bs-target="#verifyRiotModal">
+                                        <img class="verified-icons" src=@(user.PUUID == null ? "/static/pics/profile/riot-not-verified.png" : "/static/pics/profile/riot-verified.png") />
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -163,6 +183,7 @@
             <input class=" profile-save-btn" type="submit" value="Save Changes" />
         </div>
     </form>
+    <partial name="_VerifyRiotModalPartial" model="@(new VerifyRiotViewModel(){SummonerName = ""})" />
 </section>
 
 <script>
@@ -170,5 +191,4 @@
         const file = e.target.files[0];
         document.querySelector('#selectedFile').textContent = file.name;
     });
-
 </script>

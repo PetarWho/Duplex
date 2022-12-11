@@ -1,0 +1,53 @@
+﻿@using Duplex.Infrastructure.Data.Models.Account
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@model VerifyRiotViewModel
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+}
+
+<div class="modal fade" id="verifyRiotModal" tabindex="-1" aria-labelledby="verifyRiotModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="verifyRiotModalLabel">Verify League Account</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            @if (user.PUUID == null)
+            {
+                <div class="modal-body d-flex justify-content-center flex-wrap">
+                    <p>Change your Summoner Icon to the one shown below, enter your Summoner Name and press verify.</p>
+                    <img style="width:15%;" referrerpolicy="no-referrer" src="/static/pics/verify-pic.png" />
+                </div>
+                <div class="modal-footer d-block">
+                    <form method="post" asp-area="" asp-controller="Account" asp-action="VerifyRiot" asp-route-userId="@user.Id">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="text-center">
+                            <label asp-for="@Model.SummonerName" class="form-label">Summoner Name</label>
+                            <input asp-for="@Model.SummonerName" class="form-control" aria-required="true" />
+                            <span asp-validation-for="@Model.SummonerName" class="text-danger"></span>
+                        </div>
+                        <div class="row d-flex justify-content-center">
+                            <input id="submitRiot" type="submit" class="btn btn-primary m-1" value="Verify" />
+                            <button type="button" class="btn btn-secondary m-1" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            }
+            else
+            {
+                <div class="modal-body">
+                    You are already verified!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -16,6 +16,7 @@ namespace Duplex.Extensions
             services.AddScoped<IPrizeService, PrizeService>();
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<IBetService, BetService>();
+            services.AddScoped<IRiotService, RiotService>();
 
             return services;
         }

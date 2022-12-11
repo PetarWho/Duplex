@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.Xml.Linq;
 
 namespace Duplex.Controllers
 {
@@ -29,11 +30,12 @@ namespace Duplex.Controllers
         private readonly IWebHostEnvironment webHostEnvironment;
         private readonly IRankService rankService;
         private readonly IRegionService regionService;
+        private readonly IRiotService riotService;
 
         public AccountController(SignInManager<ApplicationUser> _signInManager,
             UserManager<ApplicationUser> _userManager, IRepository _repo,
             ApplicationDbContext _context, IWebHostEnvironment _webHostEnvironment,
-            IRankService _rankService, IRegionService _regionService)
+            IRankService _rankService, IRegionService _regionService, IRiotService _riotService)
         {
             signInManager = _signInManager;
             userManager = _userManager;
@@ -42,6 +44,7 @@ namespace Duplex.Controllers
             webHostEnvironment = _webHostEnvironment;
             rankService = _rankService;
             regionService = _regionService;
+            riotService = _riotService;
         }
         #endregion
 
@@ -65,6 +68,7 @@ namespace Duplex.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
@@ -122,6 +126,7 @@ namespace Duplex.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
@@ -165,6 +170,7 @@ namespace Duplex.Controllers
         #region ExternalLogin
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult ExternalLogin(string provider, string returnUrl)
         {
             var redirectUrl = Url.Action("ExternalLoginCallback", "Account",
@@ -176,8 +182,8 @@ namespace Duplex.Controllers
             return new ChallengeResult(provider, properties);
         }
 
-        public async Task<IActionResult>
-           ExternalLoginCallback(string? returnUrl = null, string? remoteError = null)
+        [HttpGet]
+        public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null, string? remoteError = null)
         {
             returnUrl ??= Url.Content("~/");
 
@@ -273,7 +279,7 @@ namespace Duplex.Controllers
 
         #endregion
 
-        #region Management
+        #region Profile
 
         [Authorize]
         [HttpGet]
@@ -293,7 +299,7 @@ namespace Duplex.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            if(user.Id != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            if (user.Id != User.FindFirstValue(ClaimTypes.NameIdentifier))
             {
                 return RedirectToAction("_403", "Error", new { area = "Errors" });
             }
@@ -335,6 +341,7 @@ namespace Duplex.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Profile(string id, ProfileViewModel model, IFormFile? file)
         {
             var user = await context.Users.Include(x => x.Region).FirstOrDefaultAsync(x => x.Id == id);
@@ -426,7 +433,7 @@ namespace Duplex.Controllers
             user.Email = model.Email;
             user.NormalizedEmail = model.Email.ToUpperInvariant();
 
-            if(user.RegionId == 12 && model.RegionId != 12)
+            if (user.RegionId == 12 && model.RegionId != 12)
             {
                 user.RegionId = model.RegionId;
             }
@@ -438,108 +445,62 @@ namespace Duplex.Controllers
 
         #endregion
 
-        #region Confirm Email
+        #region Verify Riot
 
         [HttpGet]
-        public IActionResult ConfirmEmail(string? userId)
+        public PartialViewResult VerifyRiotPartial() => PartialView("_VerifyRiotModalPartial");
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> VerifyRiot(string userId, VerifyRiotViewModel model)
         {
-            //ApplicationUser user;
-            //if (userId == null)
-            //{
-            //    //userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-            //    user = await userManager.GetUserAsync(User);
-            //}
-            //else
-            //{
-            //    user = await userManager.FindByIdAsync(userId);
-            //}
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("InvalidSummoner", "Error", new { message="Invalid Summoner Name", area = "Errors" });
+            }
 
-            //string code = await userManager.GenerateEmailConfirmationTokenAsync(user);
-            //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, "https");
+            try
+            {
+                var user = await context.Users.Include(x=>x.Region).FirstOrDefaultAsync(x=>x.Id == userId);
 
-            //using (var client = new SmtpClient())
-            //{
-            //    client.Connect(GoogleConst.ClientHost);
-            //    client.Authenticate(GoogleConst.FromEmail, GoogleConst.CredentialPassword);
+                if(user == null)
+                {
+                    TempData["RiotMessage"] = "Invalid Summoner Name";
+                    return RedirectToAction("_404", "Error", new { area = "Errors" });
+                }
 
-            //    var bodyBuilder = new BodyBuilder()
-            //    {
-            //        HtmlBody = $"<p>Click here <a src =\"{callbackUrl}\"</a> to confirm your email.</p>",
-            //        TextBody = "{callbackUrl}"
-            //    };
+                if (user.PUUID != null)
+                {
+                    return RedirectToAction("InvalidSummoner", "Error", new { message = "Already Verified", area = "Errors" });
+                }
 
-            //    var message = new MimeMessage()
-            //    {
-            //        Body = bodyBuilder.ToMessageBody()
-            //    };
+                var region = user.Region.Code switch
+                {
+                    "NA" => "NA1",
+                    "EUNE" => "EUN1",
+                    _ => "Unset",
+                };
+                var isValid = await riotService.VerifyPUUIDBySummonerIconAsync(model.SummonerName, region);
 
-            //    message.From.Add(new MailboxAddress("Noreply Duplex", GoogleConst.FromEmail));
-            //    message.To.Add(new MailboxAddress("Confirmation", user.Email));
-            //    message.Subject = "Confirm your email - Duplex.gg";
-            //    client.Send(message);
-            //    client.Disconnect(true);
-            //}
-
-            //return RedirectToAction("Index", "Home");
-
-
-
-            //      -V- SENDGRID -V-
-
-            //    ApplicationUser user;
-            //    if (userId == null)
-            //    {
-            //        //userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-            //        user = await userManager.GetUserAsync(User);
-            //    }
-            //    else
-            //    {
-            //        user = await userManager.FindByIdAsync(userId);
-            //    }
-
-            //    string code = await userManager.GenerateEmailConfirmationTokenAsync(user);
-            //    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, "https");
-            //    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");  
-            //    string body = string.Empty;
-
-            //    string webRootPath = webHostEnvironment.ContentRootPath;
-            //    string path = Path.Combine(webRootPath + @"Content\EmailConfirmation.html");
-
-            //    using (StreamReader reader = new StreamReader(path))
-            //    {
-            //        body = reader.ReadToEnd();
-            //    }
-            //    body = body.Replace("{ConfirmationLink}", callbackUrl);
-            //    body = body.Replace("{UserName}", user.Email);
-            //    MailMessage message = new MailMessage()
-            //    {
-            //        Body = body,
-            //        From = new MailAddress(GoogleConst.FromEmail),
-            //        Subject = "Confirm your email"
-            //    };
-            //    //bool IsSendEmail = SendEmail.EmailSend(user.Email, "Confirm your account", body, true);
-
-            //    var thread = new Thread(() => SendMailThread(message, user.Email, body));
-            //    thread.Start();
-
-
-            return RedirectToAction("Index", "Home");
-
-            //    //return RedirectToAction("Erorr", "_502", new { area = "Errors" });
-            //}
-
-
-            //private static void SendMailThread(MailMessage message, string recipient, string body)
-            //{
-            //    using (var server = new SmtpClient(GoogleConst.ClientHost))
-            //    {
-            //        server.Port = int.Parse(GoogleConst.Port);
-            //        server.EnableSsl = true;
-            //        server.Credentials = new NetworkCredential(GoogleConst.FromEmail, GoogleConst.CredentialPassword);
-            //        server.Send(GoogleConst.FromEmail, recipient, "Confirm your email", body);
-            //    }
-            //}
+                if (isValid)
+                {
+                    var puuid = await riotService.GetUserPUUIDBySummonerNameAsync(model.SummonerName, region);
+                    user.PUUID = puuid;
+                    await repo.SaveChangesAsync();
+                    return RedirectToAction(nameof(Profile));
+                }
+                else
+                {
+                    return RedirectToAction("InvalidSummoner", "Error", new { message = "Change Icon First", area = "Errors" });
+                }
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("_502", "Error", new { area = "Errors" });
+            }
         }
+
+
         #endregion
     }
 }

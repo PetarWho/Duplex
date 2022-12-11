@@ -15,6 +15,7 @@ namespace Duplex.Infrastructure.Data.Models.Account
         public int Coins { get; set; } = 0;
         public int Wins { get; set; } = 0;
         public int Loses { get; set; } = 0;
+        public string? PUUID { get; set; } = null;
         public ICollection<UserBet> UsersBets { get; set; } = new HashSet<UserBet>();
         public ICollection<UserPrize> UserPrizes { get; set; } = new HashSet<UserPrize>();
         public ICollection<EventUser> Events { get; set; } = new HashSet<EventUser>();

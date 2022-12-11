@@ -15,10 +15,12 @@ namespace Duplex.Controllers
         #region Injection
         private readonly IEventService eventService;
         private readonly IRepository repo;
-        public EventController(IEventService _eventService, IRepository _repo)
+        private readonly IRiotService riot;
+        public EventController(IEventService _eventService, IRepository _repo, IRiotService _riot)
         {
             eventService = _eventService;
             repo = _repo;
+            riot = _riot;
         }
         #endregion
 
@@ -256,6 +258,34 @@ namespace Duplex.Controllers
                 }).ToListAsync();
 
             return View(model);
+        }
+
+        #endregion
+
+        #region Verify
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Verify(Guid id)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                var match = await repo.AllReadonly<EventUser>(x => x.UserId == userId && x.EventId == id).ToListAsync();
+
+                if (match.Count != 0)
+                {
+                    await eventService.LeaveEvent(id, userId);
+                }
+
+                return RedirectToAction("Joined", "Event", new { userId = userId });
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("_502", "Error", new { area = "Errors" });
+            }
         }
 
         #endregion
