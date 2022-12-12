@@ -18,13 +18,11 @@ namespace Duplex.Controllers
         private readonly IEventService eventService;
         private readonly IRepository repo;
         private readonly IRiotService riotService;
-        public readonly ApplicationDbContext context;
         public EventController(IEventService _eventService, IRepository _repo, IRiotService _riot, ApplicationDbContext _context)
         {
             eventService = _eventService;
             repo = _repo;
             riotService = _riot;
-            context = _context;
         }
         #endregion
 
@@ -145,7 +143,7 @@ namespace Duplex.Controllers
         #endregion
 
         #region Details
-
+        
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
@@ -155,6 +153,7 @@ namespace Duplex.Controllers
             }
             try
             {
+
                 var model = await eventService.GetEventWithParticipantsAsync(id, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 return View(model);
             }
@@ -265,20 +264,25 @@ namespace Duplex.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Verify(Guid id, string matchId)
+        public async Task<IActionResult> Verify(Guid id, string? matchId)
         {
             try
             {
+                if (matchId == null || matchId.Trim() == "")
+                {
+                    return RedirectToAction("InvalidSummoner", "Error", new { message = "Invalid Match", area = "Errors" });
+                }
+
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                var eventUser = await repo.AllReadonly<EventUser>(x => x.UserId == userId && x.EventId == id).Include(x=>x.Event.Category).ToListAsync();
+                var eventUser = await repo.AllReadonly<EventUser>(x => x.UserId == userId && x.EventId == id).Include(x => x.Event.Category).ToListAsync();
 
                 if (eventUser.Count != 0)
                 {
                     var user = await repo.AllReadonly<ApplicationUser>().Include(x => x.Region).FirstOrDefaultAsync(x => x.Id == userId);
-                    var ev = await repo.AllReadonly<Event>().Include(x=>x.Category).FirstOrDefaultAsync(x=>x.Id == id);
+                    var ev = await repo.AllReadonly<Event>().Include(x => x.Category).FirstOrDefaultAsync(x => x.Id == id);
 
-                    if(user == null || ev == null)
+                    if (user == null || ev == null)
                     {
                         return RedirectToAction("_404", "Error", new { area = "Errors" });
                     }
@@ -347,13 +351,25 @@ namespace Duplex.Controllers
                         {
                             await eventService.VerifyDone(id, userId);
                         }
+                        else
+                        {
+                            return RedirectToAction("InvalidSummoner", "Error", new { message = "Challenge not completed", area = "Errors" });
+                        }
                     }
-                    else if(target.GetType() == typeof(bool))
+                    else if (target.GetType() == typeof(bool))
                     {
                         if ((bool)target)
                         {
                             await eventService.VerifyDone(id, userId);
                         }
+                        else
+                        {
+                            return RedirectToAction("InvalidSummoner", "Error", new { message = "Challenge not completed", area = "Errors" });
+                        }
+                    }
+                    else
+                    {
+                        return RedirectToAction("InvalidSummoner", "Error", new { message = "Invalid Match Data", area = "Errors" });
                     }
                 }
 

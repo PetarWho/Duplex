@@ -87,16 +87,16 @@ body {
 
 .heading {
     text-align: center;
-    font-size: 9em;
+    font-size: 8em;
     line-height: 1.3em;
-    margin: 2rem 0 0.5rem 0;
+    margin: 2rem 0 3rem 0;
     padding: 0;
     text-shadow: 0 0 1rem #fefefe;
 }
 
 @media (max-width: 770px) {
     .heading {
-        font-size: 7em;
+        font-size: 6em;
         line-height: 1.15;
         margin: 0;
     }

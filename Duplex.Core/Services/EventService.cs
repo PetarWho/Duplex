@@ -1,7 +1,6 @@
 ﻿using Duplex.Core.Common;
 using Duplex.Core.Contracts;
 using Duplex.Core.Models.Event;
-using Duplex.Data;
 using Duplex.Infrastructure.Data.Models;
 using Duplex.Infrastructure.Data.Models.Account;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +11,10 @@ namespace Duplex.Core.Services
     {
         private readonly IRepository repo;
         private readonly IBetService betService;
-        private readonly ApplicationDbContext context;
 
-        public EventService(IRepository _repo, ApplicationDbContext _context, IBetService _betService)
+        public EventService(IRepository _repo, IBetService _betService)
         {
             repo = _repo;
-            context = _context;
             betService = _betService;
         }
 
@@ -89,21 +86,29 @@ namespace Duplex.Core.Services
 
         public async Task<EventModel> GetEventWithParticipantsAsync(Guid eId, string userId)
         {
-            var model = await context.Events.Include(x=>x.Participants).Select(x => new EventModel()
-            {
-                Id = x.Id,
-                Name = x.Name,
-                CreatedOnUTC = x.CreatedOnUTC,
-                Description = x.Description,
-                EntryCost = x.EntryCost,
-                ImageUrl = x.ImageUrl,
-                Participants = x.Participants
-            }).FirstOrDefaultAsync(x => x.Id == eId) ?? throw new ArgumentException("Null model");
+            var model = await repo.AllReadonly<Event>().Include(x => x.Participants)
+                .Select(x => new EventModel()
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    CreatedOnUTC = x.CreatedOnUTC,
+                    Description = x.Description,
+                    EntryCost = x.EntryCost,
+                    ImageUrl = x.ImageUrl,
+                    Participants = x.Participants
+                }).FirstOrDefaultAsync(x => x.Id == eId) ?? throw new ArgumentException("Null model");
 
             var eventUser = await repo.AllReadonly<EventUser>()
                 .FirstOrDefaultAsync(x => x.EventId == eId && x.UserId == userId);
 
-            model.IsDone = eventUser?.IsDone ?? throw new ArgumentException("Event-User Not found!");
+            if (eventUser == null)
+            {
+                model.IsDone = false;
+            }
+            else
+            {
+                model.IsDone = eventUser?.IsDone ?? throw new ArgumentException("Event-User Not found!");
+            }
 
             return model;
         }
@@ -146,7 +151,7 @@ namespace Duplex.Core.Services
         public async Task LeaveEvent(Guid eventId, string userId)
         {
             var user = await repo.AllReadonly<ApplicationUser>().Include(x => x.Events).FirstOrDefaultAsync(x => x.Id == userId);
-            var ev = await context.Events.AsNoTracking().FirstAsync(x => x.Id == eventId);
+            var ev = await repo.AllReadonly<Event>().FirstAsync(x => x.Id == eventId);
 
             if (user != null)
             {
@@ -155,8 +160,8 @@ namespace Duplex.Core.Services
                 //var userBet = await repo.AllReadonly<UserBet>().FirstAsync(x => x.UserId == userId && x.Bet == bet);
 
                 bet.PrizePool -= ev.EntryCost;
-                context.EventsUsers.Remove(eventUser);
-                context.Bets.Remove(bet);
+                await repo.DeleteAsync<EventUser>(new { eventUser.UserId, eventUser.EventId });
+                await repo.DeleteAsync<Bet>(bet.Id);
 
                 await repo.SaveChangesAsync();
             }
@@ -165,14 +170,14 @@ namespace Duplex.Core.Services
         public async Task VerifyDone(Guid eventId, string userId)
         {
             var user = await repo.All<ApplicationUser>().Include(x => x.Events).FirstOrDefaultAsync(x => x.Id == userId);
-            var ev = await context.Events.AsNoTracking().FirstAsync(x => x.Id == eventId);
+            var ev = await repo.GetByIdAsync<Event>(eventId);
 
-            if(user == null)
+            if (user == null)
             {
                 throw new ArgumentException("No such user");
             }
 
-            var userEvent = await context.EventsUsers.FirstAsync(x => x.EventId == ev.Id && x.UserId == userId);
+            var userEvent = await repo.All<EventUser>().FirstAsync(x => x.EventId == ev.Id && x.UserId == userId);
             userEvent.IsDone = true;
             user.Coins += ev.EntryCost;
 

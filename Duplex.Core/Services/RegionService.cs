@@ -3,7 +3,6 @@ using Duplex.Core.Contracts;
 using Duplex.Core.Models;
 using Duplex.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
 
 namespace Duplex.Core.Services
 {
