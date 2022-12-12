@@ -34,7 +34,12 @@ namespace Duplex.Core.Services
 
         public async Task EditCategoryAsync(CategoryModel model)
         {
-            var category = await repo.GetByIdAsync<Category>(model.Id);
+            var category = await repo.All<Category>().FirstOrDefaultAsync(x=> x.Id == model.Id);
+
+            if (category == null)
+            {
+                throw new Exception("No such category.");
+            }
 
             category.Name = model.Name;
             await repo.SaveChangesAsync();
@@ -42,7 +47,7 @@ namespace Duplex.Core.Services
 
         public async Task<bool> Exists(int cId)
         {
-            return await repo.AllReadonly<Category>().AnyAsync(e => e.Id == cId);
+            return await repo.AllReadonly<Category>().AnyAsync(c => c.Id == cId);
         }
 
         public async Task<IEnumerable<CategoryModel>> GetAllAsync()
