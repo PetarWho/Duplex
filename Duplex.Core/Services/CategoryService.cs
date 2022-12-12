@@ -1,10 +1,8 @@
 ﻿using Duplex.Core.Common;
 using Duplex.Core.Contracts;
-using Duplex.Core.Models;
 using Duplex.Core.Models.Category;
 using Duplex.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
 
 namespace Duplex.Core.Services
 {
