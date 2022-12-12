@@ -433,7 +433,9 @@ namespace Duplex.Controllers
             user.Email = model.Email;
             user.NormalizedEmail = model.Email.ToUpperInvariant();
 
-            if (user.RegionId == 12 && model.RegionId != 12)
+            var modelRegion = await regionService.GetUnknownRegionAsync();
+
+            if (user.Region.Name == "Unknown" && model.RegionId != modelRegion?.Id)
             {
                 user.RegionId = model.RegionId;
             }
@@ -456,14 +458,14 @@ namespace Duplex.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("InvalidSummoner", "Error", new { message="Invalid Summoner Name", area = "Errors" });
+                return RedirectToAction("InvalidSummoner", "Error", new { message = "Invalid Summoner Name", area = "Errors" });
             }
 
             try
             {
-                var user = await context.Users.Include(x=>x.Region).FirstOrDefaultAsync(x=>x.Id == userId);
+                var user = await context.Users.Include(x => x.Region).FirstOrDefaultAsync(x => x.Id == userId);
 
-                if(user == null)
+                if (user == null)
                 {
                     TempData["RiotMessage"] = "Invalid Summoner Name";
                     return RedirectToAction("_404", "Error", new { area = "Errors" });

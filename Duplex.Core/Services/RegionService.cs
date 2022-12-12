@@ -29,9 +29,24 @@ namespace Duplex.Core.Services
 
         public async Task DeleteRegionAsync(int regId)
         {
+            if (regId == 1)
+            {
+                throw new ArgumentException("Cannot delete that region!");
+            }
+
             await repo.DeleteAsync<Region>(regId);
 
             await repo.SaveChangesAsync();
+        }
+
+        public async Task<RegionModel?> GetUnknownRegionAsync()
+        {
+            return await repo.AllReadonly<Region>().Select(x=> new RegionModel()
+            {
+                Id = x.Id,
+                Code =x.Code,
+                Name = x.Name
+            }).FirstOrDefaultAsync(x => x.Name == "Unknown");
         }
 
         public async Task EditRegionAsync(RegionModel model)

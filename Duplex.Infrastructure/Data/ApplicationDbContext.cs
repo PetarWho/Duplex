@@ -2,7 +2,6 @@
 using Duplex.Infrastructure.Data.Models.Account;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace Duplex.Data
 {
@@ -29,7 +28,12 @@ namespace Duplex.Data
             builder.Entity<UserBet>()
                 .HasKey(k => new { k.UserId, k.BetId });
 
+            builder.Entity<Region>().HasData(
+                new Region() { Id = 1, Code = "Unset", Name = "Unknown" },
+                new Region() { Id = 2, Code = "EUNE", Name = "Europe Nordic & East" },
+                new Region() { Id = 3, Code = "NA", Name = "North America" });
+
             base.OnModelCreating(builder);
-        }
     }
+}
 }

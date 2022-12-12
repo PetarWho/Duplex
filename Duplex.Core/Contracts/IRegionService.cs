@@ -7,6 +7,7 @@ namespace Duplex.Core.Contracts
         Task AddRegionAsync(RegionModel model);
         Task<IEnumerable<RegionModel>> GetAllAsync();
         Task<RegionModel> GetRegionAsync(int regId);
+        Task<RegionModel?> GetUnknownRegionAsync();
         Task EditRegionAsync(RegionModel model);
         Task DeleteRegionAsync(int regId);
         Task<bool> Exists(int regId);
