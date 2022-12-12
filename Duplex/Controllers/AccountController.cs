@@ -244,13 +244,15 @@ namespace Duplex.Controllers
 
                     if (user == null)
                     {
+                        var region = await regionService.GetUnknownRegionAsync();
+
                         var length = info.Principal.FindFirstValue(ClaimTypes.Email).IndexOf('@');
                         user = new ApplicationUser
                         {
                             UserName = info.Principal.FindFirstValue(ClaimTypes.Email)[..length],
                             Email = info.Principal.FindFirstValue(ClaimTypes.Email),
-                            RegionId = 12,
-                        };
+                            RegionId = region?.Id ?? 1,
+                        };  
 
                         var result = await userManager.CreateAsync(user);
 
