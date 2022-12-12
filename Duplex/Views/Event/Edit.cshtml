@@ -1,7 +1,7 @@
 ﻿@using Duplex.Core.Models.Event
 @model EditEventModel
 @{
-    ViewBag.Title = "Edit Event";
+    ViewBag.Title = "Edit Challenge";
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
@@ -12,7 +12,7 @@
         <form asp-action="Edit" method="post">
             <input type="hidden" asp-for="@Model.Id" />
             <div class="mb-3">
-                <label asp-for="@Model.Name" class="form-label">Event Name</label>
+                <label asp-for="@Model.Name" class="form-label">Challenge Name</label>
                 <input asp-for="@Model.Name" class="form-control" aria-required="true" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
@@ -22,7 +22,7 @@
                 <span asp-validation-for="EntryCost" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label asp-for="@Model.Description" class="form-label">Event Description</label>
+                <label asp-for="@Model.Description" class="form-label">Challenge Description</label>
                 <input asp-for="@Model.Description" class="form-control" aria-required="true" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
@@ -30,11 +30,6 @@
                 <label asp-for="@Model.ImageUrl" class="form-label">Image URL</label>
                 <input asp-for="@Model.ImageUrl" class="form-control" aria-required="true" />
                 <span asp-validation-for="ImageUrl" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="@Model.TeamSize" class="form-label">Team Size</label>
-                <input type="number" asp-for="@Model.TeamSize" class="form-control" aria-required="true" min="1" max="5"/>
-                <span asp-validation-for="TeamSize" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <input class="btn btn-primary" type="submit" value="Save Changes" />

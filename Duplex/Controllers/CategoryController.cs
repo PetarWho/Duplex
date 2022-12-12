@@ -1,19 +1,20 @@
 ﻿using Duplex.Core.Contracts;
 using Duplex.Core.Models;
-using Duplex.Core.Services;
+using Duplex.Core.Models.Category;
+using Duplex.Infrastructure.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Duplex.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class RegionController : Controller
+    public class CategoryController : Controller
     {
         #region Injection
-        private readonly IRegionService regionService;
-        public RegionController(IRegionService _regionService)
+        private readonly ICategoryService categoryService;
+        public CategoryController(ICategoryService _categoryService)
         {
-            this.regionService = _regionService;
+            this.categoryService = _categoryService;
         }
         #endregion
 
@@ -24,7 +25,7 @@ namespace Duplex.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(RegionModel model)
+        public async Task<IActionResult> Add(CategoryModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -32,7 +33,7 @@ namespace Duplex.Controllers
             }
             try
             {
-                await regionService.AddRegionAsync(model);
+                await categoryService.AddCategoryAsync(model);
 
                 return RedirectToAction(nameof(All));
             }
@@ -52,8 +53,8 @@ namespace Duplex.Controllers
         {
             try
             {
-                var model = await regionService.GetAllAsync();
-            return View(model.OrderBy(x=>x.Name));
+                var model = await categoryService.GetAllAsync();
+                return View(model.OrderBy(x => x.Name));
             }
             catch (Exception)
             {
@@ -71,8 +72,8 @@ namespace Duplex.Controllers
         {
             try
             {
-            await regionService.DeleteRegionAsync(id);
-            return RedirectToAction(nameof(All));
+                await categoryService.DeleteCategoryAsync(id);
+                return RedirectToAction(nameof(All));
             }
             catch (Exception)
             {
@@ -87,20 +88,20 @@ namespace Duplex.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            if (!await regionService.Exists(id))
+            if (!await categoryService.Exists(id))
             {
                 return RedirectToAction(nameof(All));
             }
 
-            var model = await regionService.GetRegionAsync(id);
+            var model = await categoryService.GetCategoryAsync(id);
 
-            TempData["rid"] = model.Id;
+            TempData["cid"] = model.Id;
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, RegionModel model)
+        public async Task<IActionResult> Edit(int id, CategoryModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -112,13 +113,13 @@ namespace Duplex.Controllers
                 return RedirectToAction("_403", "Error", new { area = "Errors" });
             }
 
-            if (TempData["rid"]?.ToString() != id.ToString())
+            if (TempData["cid"]?.ToString() != id.ToString())
             {
                 return RedirectToAction("_403", "Error", new { area = "Errors" });
             }
 
             model.Id = id;
-            await regionService.EditRegionAsync(model);
+            await categoryService.EditCategoryAsync(model);
             return RedirectToAction(nameof(All));
         }
 

@@ -1,8 +1,10 @@
 ﻿using Duplex.Core.Common;
 using Duplex.Core.Contracts;
 using Duplex.Core.Models.Event;
+using Duplex.Data;
 using Duplex.Infrastructure.Data.Models;
 using Duplex.Infrastructure.Data.Models.Account;
+using Google.Apis.Drive.v3.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,12 +17,14 @@ namespace Duplex.Controllers
         #region Injection
         private readonly IEventService eventService;
         private readonly IRepository repo;
-        private readonly IRiotService riot;
-        public EventController(IEventService _eventService, IRepository _repo, IRiotService _riot)
+        private readonly IRiotService riotService;
+        public readonly ApplicationDbContext context;
+        public EventController(IEventService _eventService, IRepository _repo, IRiotService _riot, ApplicationDbContext _context)
         {
             eventService = _eventService;
             repo = _repo;
-            riot = _riot;
+            riotService = _riot;
+            context = _context;
         }
         #endregion
 
@@ -151,7 +155,7 @@ namespace Duplex.Controllers
             }
             try
             {
-                var model = await eventService.GetEventWithParticipantsAsync(id);
+                var model = await eventService.GetEventWithParticipantsAsync(id, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 return View(model);
             }
             catch (Exception)
@@ -171,12 +175,7 @@ namespace Duplex.Controllers
         {
             try
             {
-                var ev = await eventService.GetEventWithParticipantsAsync(id);
-                if(ev.Participants.Count() == ev.TeamSize * 2)
-                {
-                    return RedirectToAction(nameof(All));
-                }
-
+                var ev = await eventService.GetEventWithParticipantsAsync(id, User.FindFirstValue(ClaimTypes.NameIdentifier));
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var match = await repo.AllReadonly<EventUser>(x => x.UserId == userId && x.EventId == id).ToListAsync();
                 var user = await repo.GetByIdAsync<ApplicationUser>(userId);
@@ -193,7 +192,7 @@ namespace Duplex.Controllers
                     }
                 }
 
-                return RedirectToAction("Joined", "Event", new { userId = userId });
+                return RedirectToAction("Joined", "Event", new { userId });
             }
             catch (Exception)
             {
@@ -221,7 +220,7 @@ namespace Duplex.Controllers
                     await eventService.LeaveEvent(id, userId);
                 }
 
-                return RedirectToAction("Joined", "Event", new { userId = userId });
+                return RedirectToAction("Joined", "Event", new { userId });
             }
             catch (Exception)
             {
@@ -249,7 +248,6 @@ namespace Duplex.Controllers
                     EventId = x.Event.Id,
                     EventName = x.Event.Name,
                     EventImageUrl = x.Event.ImageUrl,
-                    TeamSize = x.Event.TeamSize,
                     Description = x.Event.Description,
                     EntryCost = x.Event.EntryCost,
                     CreatedOnUTC = x.Event.CreatedOnUTC,
@@ -267,20 +265,99 @@ namespace Duplex.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Verify(Guid id)
+        public async Task<IActionResult> Verify(Guid id, string matchId)
         {
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                var match = await repo.AllReadonly<EventUser>(x => x.UserId == userId && x.EventId == id).ToListAsync();
+                var eventUser = await repo.AllReadonly<EventUser>(x => x.UserId == userId && x.EventId == id).Include(x=>x.Event.Category).ToListAsync();
 
-                if (match.Count != 0)
+                if (eventUser.Count != 0)
                 {
-                    await eventService.LeaveEvent(id, userId);
+                    var user = await repo.AllReadonly<ApplicationUser>().Include(x => x.Region).FirstOrDefaultAsync(x => x.Id == userId);
+                    var ev = await repo.AllReadonly<Event>().Include(x=>x.Category).FirstOrDefaultAsync(x=>x.Id == id);
+
+                    if(user == null || ev == null)
+                    {
+                        return RedirectToAction("_404", "Error", new { area = "Errors" });
+                    }
+
+                    var region = user?.Region.Code switch
+                    {
+                        "NA" => "NA1",
+                        "EUNE" => "EUN1",
+                        _ => "Unset",
+                    };
+
+                    var server = user?.Region.Code switch
+                    {
+                        "NA" => "americas",
+                        "EUNE" => "europe",
+                        _ => "Unset",
+                    };
+
+                    // Challenge 
+                    string[] split = ev.Name.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                    int objectiveValue = 0;
+                    string objective = ev.Category.Name.ToLower();
+
+                    if (split.Contains("a") || split.Contains("an"))
+                    {
+                        objectiveValue = 1;
+                    }
+                    else
+                    {
+                        foreach (var word in split)
+                        {
+                            if (int.TryParse(word, out int result))
+                            {
+                                objectiveValue = result;
+                                break;
+                            }
+                        }
+                    }
+
+                    var game = await riotService.GetMatchByMatchIdAsync(matchId, server, region);
+                    if (game == null)
+                    {
+                        return RedirectToAction("InvalidSummoner", "Error", new { message = "Invalid Match", area = "Errors" });
+                    }
+
+                    var participant = game?.info.participants.FirstOrDefault(x => x.puuid == user?.PUUID);
+
+                    object? target = null;
+
+                    target = objective switch
+                    {
+                        "kill" => participant?.kills,
+                        "minions" => participant?.totalMinionsKilled,
+                        "pentakill" => participant?.pentaKills,
+                        "win" => participant?.win,
+                        _ => throw new ArgumentException("Category Not Implemented!"),
+                    };
+                    if (target == null)
+                    {
+                        return RedirectToAction("InvalidSummoner", "Error", new { message = "Invalid Match", area = "Errors" });
+                    }
+
+                    if (target.GetType() == typeof(int))
+                    {
+                        if ((int)target >= objectiveValue)
+                        {
+                            await eventService.VerifyDone(id, userId);
+                        }
+                    }
+                    else if(target.GetType() == typeof(bool))
+                    {
+                        if ((bool)target)
+                        {
+                            await eventService.VerifyDone(id, userId);
+                        }
+                    }
                 }
 
-                return RedirectToAction("Joined", "Event", new { userId = userId });
+                return RedirectToAction("Joined", "Event", new { userId });
             }
             catch (Exception)
             {

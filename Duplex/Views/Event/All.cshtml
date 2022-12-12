@@ -2,7 +2,7 @@
 @model IEnumerable<EventModel>
 
 @{
-    ViewBag.Title = "All Events";
+    ViewBag.Title = "All Challenge";
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
@@ -21,13 +21,9 @@
                             <img class="d-inline" src="/static/pics/coin.png" style="max-width:20px; padding-bottom:1px;">
                             <strong class="card-subtitle d-inline">@ev.EntryCost</strong>
                         </span>
-                        <span>
-                            <img class="d-inline" src="/static/pics/team-size.png" style="max-width:20px; padding-bottom:1px;">
-                            <strong class="card-subtitle d-inline">@ev.TeamSize</strong>
-                        </span>
                         <div>
                             <img class="d-inline" src="/static/pics/team-size.png" style="max-width:20px; padding-bottom:1px;">
-                            <strong class="card-subtitle d-inline">@ev.Participants.Count()/@(ev.TeamSize * 2)</strong>
+                            <strong class="card-subtitle d-inline">@ev.Participants.Count()</strong>
                         </div>
                     </div>
                     <div class="card-footer">

@@ -22,9 +22,5 @@ namespace Duplex.Core.Models.Event
         [MaxLength(2048)]
         [Url]
         public string ImageUrl { get; set; } = null!;
-
-        [Required]
-        [Range(1, 5)]
-        public int TeamSize { get; set; }
     }
 }

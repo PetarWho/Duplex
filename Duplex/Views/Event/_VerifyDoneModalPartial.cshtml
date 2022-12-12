@@ -1,0 +1,47 @@
+﻿@using Duplex.Core.Models.Event
+@model EventModel
+
+
+<div class="modal fade" id="verifyDoneEventModal@(Model.Id)" tabindex="-1" aria-labelledby="verifyDoneEventModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="verifyDoneEventModalLabel">Verify League Account</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            @if (!Model.IsDone)
+            {
+                <div class="modal-body d-flex justify-content-center flex-wrap">
+                    <p>Go to your match history, type the Game Id here and press Done.</p>
+                    <img style="width:45%; border-radius:3px;" referrerpolicy="no-referrer" src="/static/pics/verify-game.png" />
+                </div>
+                <div class="modal-footer d-block">
+                    <form method="post" asp-area="" asp-controller="Event" asp-action="Verify" asp-route-id="@Model.Id">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="text-center">
+                            <label for="matchId" class="form-label">Game Id</label>
+                            <input name="matchId" class="form-control" aria-required="true" />
+                        </div>
+                        <div class="row d-flex justify-content-center">
+                            <input type="submit" class="btn btn-primary m-1" value="Done" />
+                            <button type="button" class="btn btn-secondary m-1" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            }
+            else
+            {
+                <div class="modal-body">
+                    You already completed the challenge!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -8,12 +8,10 @@ namespace Duplex.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> logger;
         private readonly IEventService eventService;
 
-        public HomeController(ILogger<HomeController> _logger, IEventService _eventService)
+        public HomeController(IEventService _eventService)
         {
-            logger = _logger;
             eventService = _eventService;
         }
 

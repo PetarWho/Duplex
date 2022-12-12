@@ -18,10 +18,10 @@
                             <img class="d-inline" src="/static/pics/coin.png" style="max-width:20px; padding-bottom:1px;">
                             <strong class="card-subtitle d-inline">@ev.EntryCost</strong>
                         </span>
-                        <span>
+                        <div>
                             <img class="d-inline" src="/static/pics/team-size.png" style="max-width:20px; padding-bottom:1px;">
-                            <strong class="card-subtitle d-inline">@ev.TeamSize</strong>
-                        </span>
+                            <strong class="card-subtitle d-inline">@ev.Participants.Count()</strong>
+                        </div>
                     </div>
                     <div class="card-footer">
                         <small class="text-muted">Created on @ev.CreatedOnUTC.ToShortDateString()</small>

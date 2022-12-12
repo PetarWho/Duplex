@@ -13,6 +13,7 @@ namespace Duplex.Extensions
             services.AddScoped<IRankService, RankService>();
             services.AddScoped<IRepository, Repository>();
             services.AddScoped<IRegionService, RegionService>();
+            services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IPrizeService, PrizeService>();
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<IBetService, BetService>();

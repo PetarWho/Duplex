@@ -1,0 +1,25 @@
+﻿@using Duplex.Core.Models.Category
+@model IEnumerable<CategoryModel>
+
+@{
+    ViewBag.Title = "List of Categories";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+<div class="text-center container d-flex justify-content-center">
+    <ul class="list-group list">
+        @foreach (var category in Model)
+        {
+            <li class="list-group-item">
+                <h5 class="text-start text-wrap p-2 float-start"><span>@category.Name</span></h5>
+                <span class="float-end buttons">
+                    <a asp-controller="Category" asp-action="Edit" asp-route-id="@category.Id" class="btn btn-warning">Edit</a>
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#deleteCategoryModal@(category.Id)" class="btn btn-danger">Delete</button>
+                </span>
+                <partial name="_DeleteCategoryModalPartial" model="@category" />
+            </li>
+        }
+    </ul>
+</div>

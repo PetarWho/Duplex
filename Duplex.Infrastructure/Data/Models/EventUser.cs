@@ -14,5 +14,7 @@ namespace Duplex.Infrastructure.Data.Models
 
         [ForeignKey(nameof(EventId))]
         public Event Event { get; set; } = null!;
+
+        public bool IsDone { get; set; } = false;
     }
 }

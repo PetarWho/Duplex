@@ -4,6 +4,7 @@ using Duplex.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Duplex.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221211231407_RemovedEventTeamSize")]
+    partial class RemovedEventTeamSize
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,7 +155,7 @@ namespace Duplex.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedOnUTC")
@@ -191,9 +193,6 @@ namespace Duplex.Data.Migrations
 
                     b.Property<Guid>("EventId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDone")
-                        .HasColumnType("bit");
 
                     b.HasKey("UserId", "EventId");
 
@@ -458,13 +457,9 @@ namespace Duplex.Data.Migrations
 
             modelBuilder.Entity("Duplex.Infrastructure.Data.Models.Event", b =>
                 {
-                    b.HasOne("Duplex.Infrastructure.Data.Models.Category", "Category")
+                    b.HasOne("Duplex.Infrastructure.Data.Models.Category", null)
                         .WithMany("Events")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
+                        .HasForeignKey("CategoryId");
                 });
 
             modelBuilder.Entity("Duplex.Infrastructure.Data.Models.EventUser", b =>

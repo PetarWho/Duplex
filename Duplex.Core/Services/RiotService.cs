@@ -29,7 +29,7 @@ namespace Duplex.Core.Services
                 .Add(new MediaTypeWithQualityHeaderValue("application/json"));
             var responseDto = JsonConvert.DeserializeObject<string[]>(await client.GetStringAsync(url));
 
-            return responseDto ?? new string[] {};
+            return responseDto ?? Array.Empty<string>();
         }
 
         /// <summary>
