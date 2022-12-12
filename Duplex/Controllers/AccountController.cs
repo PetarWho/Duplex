@@ -389,7 +389,7 @@ namespace Duplex.Controllers
 
                 var CSPath = webHostEnvironment.ContentRootPath;
                 // Load the Service account credentials and define the scope of its access.
-                var credential = GoogleCredential.FromFile(GoogleConst.PathToServiceAccountKeyFile)
+                var credential = GoogleCredential.FromFile(Path.Combine((webRootPath + @"Content\"), GoogleConst.ServiceAccountKeyFile))
                                 .CreateScoped(DriveService.ScopeConstants.Drive);
 
                 // Create the  Drive service.
