@@ -26,7 +26,8 @@ namespace Duplex.Core.Services
                 EntryCost = model.EntryCost,
                 Description = model.Description,
                 ImageUrl = model.ImageUrl,
-                CreatedOnUTC = DateTime.UtcNow
+                CreatedOnUTC = DateTime.UtcNow,
+                CategoryId = model.CategoryId
             });
 
             await repo.SaveChangesAsync();
@@ -179,7 +180,7 @@ namespace Duplex.Core.Services
 
             var userEvent = await repo.All<EventUser>().FirstAsync(x => x.EventId == ev.Id && x.UserId == userId);
             userEvent.IsDone = true;
-            user.Coins += ev.EntryCost;
+            user.Coins += ev.EntryCost * 2;
 
             await repo.SaveChangesAsync();
         }

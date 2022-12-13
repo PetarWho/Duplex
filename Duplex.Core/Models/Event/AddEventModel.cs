@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Duplex.Core.Models.Category;
 
 namespace Duplex.Core.Models.Event
 {
@@ -20,5 +21,10 @@ namespace Duplex.Core.Models.Event
         [MaxLength(2048)]
         [Url]
         public string ImageUrl { get; set; } = null!;
+
+        [Required]
+        public int CategoryId { get; set; }
+
+        public IEnumerable<CategoryModel> Categories { get; set; } = new List<CategoryModel>();
     }
 }

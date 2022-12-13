@@ -16,13 +16,16 @@ namespace Duplex.Controllers
     {
         #region Injection
         private readonly IEventService eventService;
+        private readonly ICategoryService categoryService;
         private readonly IRepository repo;
         private readonly IRiotService riotService;
-        public EventController(IEventService _eventService, IRepository _repo, IRiotService _riot, ApplicationDbContext _context)
+        public EventController(IEventService _eventService, IRepository _repo,
+            IRiotService _riot, ApplicationDbContext _context, ICategoryService _categoryService)
         {
             eventService = _eventService;
             repo = _repo;
             riotService = _riot;
+            categoryService = _categoryService;
         }
         #endregion
 
@@ -30,7 +33,15 @@ namespace Duplex.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public IActionResult Add() => View();
+        public async Task<IActionResult> Add()
+        {
+            var model = new AddEventModel()
+            {
+                Categories = await categoryService.GetAllAsync()
+            };
+
+            return View(model);
+        }
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
@@ -39,6 +50,7 @@ namespace Duplex.Controllers
         {
             if (!ModelState.IsValid)
             {
+                model.Categories = await categoryService.GetAllAsync();
                 return View(model);
             }
             try
@@ -47,10 +59,11 @@ namespace Duplex.Controllers
 
                 return RedirectToAction(nameof(All));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 ModelState.AddModelError("", "Oops.. That was not supposed to happen");
 
+                model.Categories = await categoryService.GetAllAsync();
                 return View(model);
             }
         }
@@ -143,7 +156,7 @@ namespace Duplex.Controllers
         #endregion
 
         #region Details
-        
+
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
