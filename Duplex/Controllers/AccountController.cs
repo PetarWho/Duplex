@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using System.Xml.Linq;
 
 namespace Duplex.Controllers
 {
@@ -252,7 +251,7 @@ namespace Duplex.Controllers
                             UserName = info.Principal.FindFirstValue(ClaimTypes.Email)[..length],
                             Email = info.Principal.FindFirstValue(ClaimTypes.Email),
                             RegionId = region?.Id ?? 1,
-                        };  
+                        };
 
                         var result = await userManager.CreateAsync(user);
 
@@ -504,6 +503,40 @@ namespace Duplex.Controllers
             }
         }
 
+
+        #endregion
+
+        #region Daily Free
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> DailyFree()
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("_403", "Error", new { area = "Errors" });
+            }
+
+            if (!user.DailyClaimedOnUtc.HasValue || user.DailyClaimedOnUtc.Value.AddDays(1) <= DateTime.UtcNow)
+            {
+                user.DailyAvailable = true;
+            }
+
+            if (!user.DailyAvailable)
+            {
+                return RedirectToAction("InvalidSummoner", "Error", new { message = "Already claimed", area = "Errors" });
+            }
+
+            user.DailyClaimedOnUtc = DateTime.UtcNow;
+            user.DailyAvailable = false;
+
+            user.Coins += 10;
+
+            await repo.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Home");
+        }
 
         #endregion
     }

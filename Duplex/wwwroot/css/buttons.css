@@ -7,11 +7,11 @@
     color: white;
     border-style: outset;
     border-color: #0066A2;
-    font-size:1.2rem;
-    padding:5px 0;
+    font-size: 1.2rem;
+    padding: 5px 0;
     font: bold15px arial,sans-serif;
     text-shadow: none;
-    max-width:20vw;
+    max-width: 20vw;
 }
 
 .custom-file-input {
@@ -26,36 +26,76 @@
     padding: 0;
     align-content: center;
 }
-.custom-file-input::-webkit-file-upload-button {
-  visibility: hidden;
-}
-.custom-file-input::before {
-  content: 'Change Avatar';
-  color: black;
-  background: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
-  border: 1px solid #999;
-  border-radius: 3px;
-  padding: 0.5vh 0.5vw;
-  outline: none;
-  align-self:center;
-  white-space: nowrap;
-  -webkit-user-select: none;
-  cursor: pointer;
-  text-shadow: 1px 1px #fff;
-  font-weight: 700;
-  font-size: 10pt;
-}
-.custom-file-input:hover::before {
-  border-color: black;
-}
-.custom-file-input:active {
-  outline: 0;
-}
-.custom-file-input:active::before {
-  background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9); 
-}
+
+    .custom-file-input::-webkit-file-upload-button {
+        visibility: hidden;
+    }
+
+    .custom-file-input::before {
+        content: 'Change Avatar';
+        color: black;
+        background: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
+        border: 1px solid #999;
+        border-radius: 3px;
+        padding: 0.5vh 0.5vw;
+        outline: none;
+        align-self: center;
+        white-space: nowrap;
+        -webkit-user-select: none;
+        cursor: pointer;
+        text-shadow: 1px 1px #fff;
+        font-weight: 700;
+        font-size: 10pt;
+    }
+
+    .custom-file-input:hover::before {
+        border-color: black;
+    }
+
+    .custom-file-input:active {
+        outline: 0;
+    }
+
+        .custom-file-input:active::before {
+            background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+        }
 
 .provider-btn {
     width: auto;
     text-transform: none;
 }
+
+.a-available {
+    border: 2px solid green;
+    border-radius: 3px;
+    color: green;
+    text-decoration: none;
+    padding: 5px;
+}
+
+    .a-available:hover {
+        border: 2px solid black;
+        background-color: green;
+        border-radius: 3px;
+        color: white;
+        text-decoration: none;
+        padding: 5px;
+    }
+
+.a-unavailable {
+    border: 2px solid darkred;
+    border-radius: 3px;
+    color: darkred;
+    text-decoration: none;
+    padding: 5px;
+    pointer-events: none;
+}
+
+    .a-unavailable:hover {
+        border: 2px solid black;
+        background-color: darkred;
+        border-radius: 3px;
+        color: white;
+        text-decoration: none;
+        padding: 5px;
+    }

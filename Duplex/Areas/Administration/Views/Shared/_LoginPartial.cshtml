@@ -16,6 +16,20 @@
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
+        <li class="nav-item" style="margin-right: 10px;">
+            @if (@UserManager.GetUserAsync(User).Result.DailyAvailable)
+            {
+                <span class="nav-link">
+                    <a asp-action="DailyFree" asp-controller="Account" asp-area="" class="a-available">Daily Free</a>
+                </span>
+            }
+            else
+            {
+                <span class="nav-link">
+                    <a asp-action="DailyFree" asp-controller="Account" asp-area="" class="a-unavailable">Daily Free</a>
+                </span>
+            }
+        </li>
         <li class="nav-item" style="margin-right:10px;">
             <span class="nav-link">
                 <img referrerpolicy="no-referrer" src="/static/pics/coin.png" style="max-width:22px;">
