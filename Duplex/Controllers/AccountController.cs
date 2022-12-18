@@ -530,8 +530,44 @@ namespace Duplex.Controllers
 
             user.DailyClaimedOnUtc = DateTime.UtcNow;
             user.DailyAvailable = false;
+            
+            int daily;
 
-            user.Coins += 10;
+
+            if (User.IsInRole("Member"))
+            {
+                daily = 10;
+            }
+            else if (User.IsInRole("Admin"))
+            {
+                daily = 20;
+            }
+            else if (User.IsInRole("Diamond"))
+            {
+                daily = 15;
+            }
+            else if (User.IsInRole("Platinum"))
+            {
+                daily = 14;
+            }
+            else if (User.IsInRole("Gold"))
+            {
+                daily = 13;
+            }
+            else if (User.IsInRole("Silver"))
+            {
+                daily = 12;
+            }
+            else if (User.IsInRole("Bronze"))
+            {
+                daily = 11;
+            }
+            else
+            {
+                daily = 10;
+            }
+
+            user.Coins += daily;
 
             await repo.SaveChangesAsync();
 
