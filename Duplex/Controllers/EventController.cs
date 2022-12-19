@@ -59,7 +59,7 @@ namespace Duplex.Controllers
 
                 return RedirectToAction(nameof(All));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ModelState.AddModelError("", "Oops.. That was not supposed to happen");
 
@@ -121,6 +121,7 @@ namespace Duplex.Controllers
             }
 
             var model = await eventService.GetEventAsync(id);
+            model.Categories = await categoryService.GetAllAsync();
 
             TempData["eid"] = id;
 

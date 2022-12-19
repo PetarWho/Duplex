@@ -113,8 +113,8 @@ namespace Duplex.Core.Models.RiotDTOs
         public int turretsTakenWithRiftHerald { get; set; }
         public int twentyMinionsIn3SecondsCount { get; set; }
         public int unseenRecalls { get; set; }
-        public int visionScoreAdvantageLaneOpponent { get; set; }
-        public int visionScorePerMinute { get; set; }
+        public double visionScoreAdvantageLaneOpponent { get; set; }
+        public double visionScorePerMinute { get; set; }
         public int wardTakedowns { get; set; }
         public int wardTakedownsBefore20M { get; set; }
         public int wardsGuarded { get; set; }

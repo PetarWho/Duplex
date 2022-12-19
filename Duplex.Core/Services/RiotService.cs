@@ -44,6 +44,7 @@ namespace Duplex.Core.Services
             var url = $@"https://{server.ToLower()}.api.riotgames.com/lol/match/v5/matches/{region.ToUpper()}_{matchId}?api_key={RiotAPIConst.APIKey}";
 
             var client = new HttpClient();
+            client.BaseAddress =new Uri(url);
             client.DefaultRequestHeaders.Accept
                 .Add(new MediaTypeWithQualityHeaderValue("application/json"));
             var responseDto = JsonConvert.DeserializeObject<Root>(await client.GetStringAsync(url));
