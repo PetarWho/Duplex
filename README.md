@@ -36,26 +36,26 @@
             <li>Make the user interface (UI) good-looking and easy to use. Providing a broken design will result in sanctioned functionality points</li>
         </ul>
 
-    <h2> Bonuses </h2>
-    <ul>
-        <li>Using Google Drive API to upload the user profile picture</li>
-        <li>Using Riot Games API to verify tasks and link user account</li>
-    </ul>
+   <h2> Bonuses </h2>
+   <ul>
+       <li>Using Google Drive API to upload the user profile picture</li>
+       <li>Using Riot Games API to verify tasks and link user account</li>
+   </ul>
 
-    <h2>Prizes</h2>
-    <p>The web app has prizes that only administrators can create, and every user can claim them if they have enough coins to redeem.</p>
+   <h2>Prizes</h2>
+   <p>The web app has prizes that only administrators can create, and every user can claim them if they have enough coins to redeem.</p>
     
-    <h2>Installation and Usage</h2>
-    <p>To install and use Duplex, follow these steps:</p>
-    <ol>
-        <li>Clone this repository.</li>
-        <li>Open the project in Visual Studio.</li>
-        <li>Configure the database connection string in appsettings.json.</li>
-        <li>Configure the user secrets and API Keys needed for the work of Google Drive and Riot Games APIs</li>
-        <li>Run the database migration by running the following command in the Package Manager Console:</li>
-        <code>update-database</code>
-        <li>Run the application.</li>
-    </ol>
+   <h2>Installation and Usage</h2>
+   <p>To install and use Duplex, follow these steps:</p>
+   <ol>
+       <li>Clone this repository.</li>
+       <li>Open the project in Visual Studio.</li>
+       <li>Configure the database connection string in appsettings.json.</li>
+       <li>Configure the user secrets and API Keys needed for the work of Google Drive and Riot Games APIs</li>
+       <li>Run the database migration by running the following command in the Package Manager Console:</li>
+       <code>update-database</code>
+       <li>Run the application.</li>
+   </ol>
     
-    <h2>Contributing</h2>
-    <p>We welcome contributions to Duplex! If you find a bug, please submit an issue. If you want to contribute code, feel free to fork the repository and create a pull request.</p>
+   <h2>Contributing</h2>
+   <p>We welcome contributions to Duplex! If you find a bug, please submit an issue. If you want to contribute code, feel free to fork the repository and create a pull request.</p>
