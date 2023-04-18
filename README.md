@@ -1,5 +1,5 @@
 <h1>Duplex.gg</h1>
-<h3>ASP.NET Web App - SoftUni Web - Sep 2022</h3>
+<h3>ASP.NET Web App - SoftUni Web FINAL - Sep 2022</h3>
 
 
 <h1>Duplex - League of Legends Task Completion Web App</h1>
